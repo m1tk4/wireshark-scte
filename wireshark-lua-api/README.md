@@ -5,8 +5,7 @@ These type definitions are based on the official Wireshark documentation:
 - [Wireshark Developer's Guide - Lua Support](https://www.wireshark.org/docs/wsdg_html_chunked/)
 - [Wireshark Source Code](https://github.com/wireshark/wireshark)
 - [Lrexlib Manual](https://rrthomas.github.io/lrexlib/manual.html) - for rex_pcre2 regular expressions
-
-
+- [Wireshark Globals](https://github.com/wireshark/wireshark/blob/4988cfd31b29704411a7bd341a3034a989996943/test/lua/globals_5.0.txt#L1626)
 
 
 ## Classes Left to Cover:
@@ -22,16 +21,8 @@ These type definitions are based on the official Wireshark documentation:
 13.3.7. ProtoField
 13.3.8. Global Functions
 
-13.4. Obtaining Dissection Data
-13.4.1. Field
-13.4.2. FieldInfo
-13.4.3. Global Functions
-
 13.7. Adding Information To The Dissection Tree
 13.7.1. TreeItem
-
-13.8. Post-Dissection Packet Analysis
-13.8.1. Listener
 
 
 13.11. Custom File Format Reading And Writing
@@ -43,9 +34,7 @@ These type definitions are based on the official Wireshark documentation:
 13.11.6. FrameInfoConst
 13.11.7. Global Functions
 
-
-13.15. Gcrypt symmetric cipher functions
-13.15.1. GcryptCipher
-13.15.2. Global Functions
-
 13.17. Bitwise Operations
+
+## TODO
+- FieldInfo is still wonky

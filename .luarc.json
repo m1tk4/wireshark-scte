@@ -40,6 +40,7 @@
     "wtap_name_to_file_type_subtype",
     "wtap_pcap_file_type_subtype",
     "wtap_pcap_nsec_file_type_subtype",
-    "wtap_pcapng_file_type_subtype"
+    "wtap_pcapng_file_type_subtype",
+    "all_field_infos"
   ]
 }
