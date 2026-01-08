@@ -41,6 +41,15 @@
     "wtap_pcap_file_type_subtype",
     "wtap_pcap_nsec_file_type_subtype",
     "wtap_pcapng_file_type_subtype",
-    "all_field_infos"
+    "all_field_infos",
+    "ftypes",
+    "gcry_cipher_algo_info",
+    "gcry_cipher_algo_name",
+    "gcry_cipher_map_name",
+    "gcry_cipher_mode_from_oid",
+    "gcry_cipher_get_algo_keylen",
+    "gcry_cipher_get_algo_blklen",
+    "register_filehandler",
+    "deregister_filehandler"
   ]
 }
