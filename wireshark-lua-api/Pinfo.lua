@@ -1,0 +1,42 @@
+-- https://www.wireshark.org/docs/wsdg_html_chunked/lua_module_Pinfo.html
+
+---@class Proto
+---@class Dissector
+
+---@class Pinfo
+---Packet information.
+---@field visited boolean Whether this packet has been already visited (read-only).
+---@field number number The number of this packet in the current file (read-only).
+---@field len number The length of the frame (read-only).
+---@field caplen number The captured length of the frame (read-only).
+---@field abs_ts NSTime When the packet was captured (read-only).
+---@field rel_ts NSTime Number of seconds passed since beginning of capture (read-only).
+---@field delta_ts NSTime Number of seconds passed since the last captured packet (read-only).
+---@field delta_dis_ts NSTime Number of seconds passed since the last displayed packet (read-only).
+---@field curr_proto string Which Protocol are we dissecting (read-only).
+---@field can_desegment number Set if this segment could be desegmented.
+---@field saved_can_desegment number Value of can_desegment before the current dissector was called (read-only).
+---@field desegment_len number Estimated number of additional bytes required for completing the PDU.
+---@field desegment_offset number Offset in the tvbuff at which the dissector will continue processing when next called.
+---@field fragmented boolean If the protocol is only a fragment (read-only).
+---@field in_error_pkt boolean If we're inside an error packet.
+---@field match_uint number Matched uint for calling subdissector from table (read-only).
+---@field match_string string Matched string for calling subdissector from table (read-only).
+---@field port_type number Type of Port of .src_port and .dst_port.
+---@field src_port number Source Port of this Packet.
+---@field dst_port number Destination Port of this Packet.
+---@field dl_src Address Data Link Source Address of this Packet.
+---@field dl_dst Address Data Link Destination Address of this Packet.
+---@field net_src Address Network Layer Source Address of this Packet.
+---@field net_dst Address Network Layer Destination Address of this Packet.
+---@field src Address Source Address of this Packet.
+---@field dst Address Destination Address of this Packet.
+---@field p2p_dir number Direction of this Packet (incoming / outgoing).
+---@field match any Port/Data we are matching (read-only).
+---@field columns Columns Access to the packet list columns (read-only).
+---@field cols Columns Access to the packet list columns, equivalent to pinfo.columns (read-only).
+---@field private private PrivateTable Access to the private table entries (read-only).
+---@field hi Address Higher Address of this Packet.
+---@field lo Address Lower Address of this Packet (read-only).
+---@field conversation Conversation|Dissector|Proto On read, returns a Conversation object. On write, sets the Dissector for the current conversation.
+Pinfo = {}

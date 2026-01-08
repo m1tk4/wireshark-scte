@@ -1,11 +1,12 @@
 
-
+-- require("wireshark-lua-api.NSTime")
 set_plugin_info({
     version = "1.0.0",
     description = "SCTE-104 Protocol Dissector",
     author = "Dimitri Tarassenko",
     repository = "https://github.com/m1tk4/wireshark-scte"
 })
+
 
 -- SCTE-104 TCP Lua Dissector with SPLICE_REQUEST_DATA parsing + lookup tables
 
@@ -31,6 +32,7 @@ local splice_type_vals = {
 local m = MyType:new()
 m = MyType:more()
 m:something()  -- just to avoid unused method warning
+
 
 -- Splice Request fields (namespaced under scte104.splice.*)
 local f_splice_type    = ProtoField.uint8("scte104.splice.type", "Splice Insert Type", base.DEC, splice_type_vals)

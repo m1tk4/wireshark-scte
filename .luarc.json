@@ -1,0 +1,10 @@
+{
+  "workspace.library": [
+    "wireshark-lua-api"
+  ],
+  "runtime.version": "Lua 5.2",
+  "diagnostics.globals": [
+    "wireshark",
+    "get_version"
+  ]
+}
