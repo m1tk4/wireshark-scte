@@ -1,0 +1,10 @@
+{
+    "Lua.diagnostics.globals": [
+        "set_plugin_idnfo",
+        "MyType",
+        "get_version",
+        "set_plugin_info",
+        "NSTime",
+        "format_date"
+    ]
+}

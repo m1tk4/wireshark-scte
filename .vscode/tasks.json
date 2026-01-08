@@ -1,0 +1,29 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+        "label": "Test SCTE-104 Dissector",
+        "type": "shell",
+        "command": "pwsh",
+        "args": [
+            "-File",
+            "${workspaceFolder}\\tests\\TestTShark.ps1",
+            "-Watch",
+            "-CaptureFile",
+            "scte104-init-alive.pcap",
+            "-Frame",
+            "8"
+        ],
+        "isBackground": true,
+        "problemMatcher": [],
+        "presentation": {
+            "reveal": "always",
+            "panel": "dedicated"
+        },
+        "group": {
+            "kind": "test",
+            "isDefault": true
+        }
+    }
+]
+}
