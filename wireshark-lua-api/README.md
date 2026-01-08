@@ -11,10 +11,6 @@ These type definitions are based on the official Wireshark documentation:
 
 ## Classes Left to Cover:
 
-13.2. GUI Support
-13.2.1. ProgDlg
-13.2.2. TextWindow
-13.2.3. Global Functions
 
 13.3. Functions For New Protocols And Dissectors
 13.3.1. Dissector
@@ -37,9 +33,6 @@ These type definitions are based on the official Wireshark documentation:
 13.8. Post-Dissection Packet Analysis
 13.8.1. Listener
 
-13.9. Saving Capture Files
-13.9.1. Dumper
-13.9.2. PseudoHeader
 
 13.11. Custom File Format Reading And Writing
 13.11.1. CaptureInfo
