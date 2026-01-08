@@ -1,15 +1,11 @@
 
-loadfile("wireshark-api.lua")()
 
-
-set_plugin_info{
+set_plugin_info({
     version = "1.0.0",
     description = "SCTE-104 Protocol Dissector",
     author = "Dimitri Tarassenko",
     repository = "https://github.com/m1tk4/wireshark-scte"
-}
-
-Myfunc(5)  -- just to avoid unused function warning
+})
 
 -- SCTE-104 TCP Lua Dissector with SPLICE_REQUEST_DATA parsing + lookup tables
 

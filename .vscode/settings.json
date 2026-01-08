@@ -5,6 +5,12 @@
         "get_version",
         "set_plugin_info",
         "NSTime",
-        "format_date"
+        "format_date",
+        "get_preference",
+        "set_preference",
+        "reset_preference",
+        "apply_preferences",
+        "report_failure",
+        "register_stat_cmd_arg"
     ]
 }
