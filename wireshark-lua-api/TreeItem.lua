@@ -146,23 +146,54 @@ function TreeItem:add_packet_field(protofield, tvbrange, encoding, label) end
 
 --- Adds a child item to this tree item, returning the new child TreeItem.
 --- If the ProtoField represents a numeric value (int, uint or float), it's treated as Big Endian.
---- Has complex form: 'treeitem:add([protofield,] [tvbrange,] value], label)'
----@param protofield? ProtoField|Proto The ProtoField field or Proto protocol object to add
----@param tvbrange? TvbRange The TvbRange of bytes in the packet this tree item covers
----@param value? any The field's value, instead of the ProtoField/Proto one
+---@param protofield ProtoField The ProtoField field to add
+---@param tvbrange TvbRange The TvbRange of bytes in the packet this tree item covers
+---@return TreeItem # The new child TreeItem
+function TreeItem:add(protofield, tvbrange) end
+
+--- Adds a child item to this tree item, returning the new child TreeItem.
+---@param protofield ProtoField The ProtoField field to add
+---@param value number|Int64|UInt64 The field's value
+---@return TreeItem # The new child TreeItem
+function TreeItem:add(protofield, value) end
+
+--- Adds a child item to this tree item, returning the new child TreeItem.
+---@param proto Proto The ProtoField field or Proto protocol object to add
+---@param tvbrange TvbRange The TvbRange of bytes in the packet this tree item covers
 ---@param label? string One or more strings to use for the tree item label
 ---@return TreeItem # The new child TreeItem
-function TreeItem:add(protofield, tvbrange, value, label) end
+function TreeItem:add(proto, tvbrange, label) end
+
+---Add a child item to this tree item, consisting of all parameter values separated by spaces
+---@param label string|number String or number to add as a child item
+---@return TreeItem # The new child TreeItem
+function TreeItem:add(label) end
 
 --- Adds a child item to this tree item, returning the new child TreeItem.
 --- If the ProtoField represents a numeric value (int, uint or float), it's treated as Little Endian.
---- Has complex form: 'treeitem:add_le([protofield,] [tvbrange,] value], label)'
----@param protofield? ProtoField|Proto The ProtoField field or Proto protocol object to add
----@param tvbrange? TvbRange The TvbRange of bytes in the packet this tree item covers
----@param value? any The field's value, instead of the ProtoField/Proto one
+---@param protofield ProtoField The ProtoField field to add
+---@param tvbrange TvbRange The TvbRange of bytes in the packet this tree item covers
+---@return TreeItem # The new child TreeItem
+function TreeItem:add_le(protofield, tvbrange) end
+
+--- Adds a child item to this tree item, returning the new child TreeItem.
+---@param protofield ProtoField The ProtoField field to add
+---@param value number|Int64|UInt64 The field's value
+---@return TreeItem # The new child TreeItem
+function TreeItem:add_le(protofield, value) end
+
+--- Adds a child item to this tree item, returning the new child TreeItem.
+---@param proto Proto The ProtoField field or Proto protocol object to add
+---@param tvbrange TvbRange The TvbRange of bytes in the packet this tree item covers
 ---@param label? string One or more strings to use for the tree item label
 ---@return TreeItem # The new child TreeItem
-function TreeItem:add_le(protofield, tvbrange, value, label) end
+function TreeItem:add_le(proto, tvbrange, label) end
+
+---Add a child item to this tree item, consisting of all parameter values separated by spaces
+---If the label field represents a numeric value (int, uint or float), it's treated as Little Endian.
+---@param label string|number String or number to add as a child item
+---@return TreeItem # The new child TreeItem
+function TreeItem:add_le(label) end
 
 --- Sets the text of the label.
 --- As of 1.11.3, returns the same tree item to allow chained calls.
