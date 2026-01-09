@@ -73,6 +73,80 @@ expert.severity = {
     ERROR = 8388608, -- PI_ERROR
 }
 
+--- Legacy PI_* constants (DEPRECATED - use expert.group.* and expert.severity.* instead)
+
+---@deprecated Use expert.group.ASSUMPTION instead
+PI_ASSUMPTION = 218103808
+
+---@deprecated Use expert.severity.CHAT instead
+PI_CHAT = 2097152
+
+---@deprecated Use expert.group.CHECKSUM instead
+PI_CHECKSUM = 16777216
+
+---@deprecated Use expert.severity.COMMENT instead
+PI_COMMENT = 1048576
+
+---@deprecated Use expert.group.COMMENTS_GROUP instead
+PI_COMMENTS_GROUP = 184549376
+
+---@deprecated Use expert.group.DEBUG instead
+PI_DEBUG = 134217728
+
+---@deprecated Use expert.group.DECRYPTION instead
+PI_DECRYPTION = 201326592
+
+---@deprecated Use expert.group.DEPRECATED instead
+PI_DEPRECATED = 234881024
+
+---@deprecated Dissector bug indicator (internal use)
+PI_DISSECTOR_BUG = 285212672
+
+---@deprecated Use expert.severity.ERROR instead
+PI_ERROR = 8388608
+
+---@deprecated Group mask constant (internal use)
+PI_GROUP_MASK = -16777216
+
+---@deprecated Use expert.group.INTERFACE instead
+PI_INTERFACE = 268435456
+
+---@deprecated Use expert.group.MALFORMED instead
+PI_MALFORMED = 117440512
+
+---@deprecated Use expert.severity.NOTE instead
+PI_NOTE = 4194304
+
+---@deprecated Use expert.group.PROTOCOL instead
+PI_PROTOCOL = 150994944
+
+---@deprecated Use expert.group.REASSEMBLE instead
+PI_REASSEMBLE = 100663296
+
+---@deprecated Use expert.group.RECEIVE instead
+PI_RECEIVE = 251658240
+
+---@deprecated Use expert.group.REQUEST_CODE instead
+PI_REQUEST_CODE = 67108864
+
+---@deprecated Use expert.group.RESPONSE_CODE instead
+PI_RESPONSE_CODE = 50331648
+
+---@deprecated Use expert.group.SECURITY instead
+PI_SECURITY = 167772160
+
+---@deprecated Use expert.group.SEQUENCE instead
+PI_SEQUENCE = 33554432
+
+---@deprecated Severity mask constant (internal use)
+PI_SEVERITY_MASK = 15728640
+
+---@deprecated Use expert.group.UNDECODED instead
+PI_UNDECODED = 83886080
+
+---@deprecated Use expert.severity.WARN instead
+PI_WARN = 6291456
+
 
 --- Protocol expert info field for adding items to the dissection tree.
 --- Must be added to a `Proto.experts` table to be registered.
