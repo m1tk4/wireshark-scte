@@ -1,5 +1,5 @@
 
--- require("wireshark-lua-api.NSTime")
+
 set_plugin_info({
     version = "1.0.0",
     description = "SCTE-104 Protocol Dissector",
@@ -77,6 +77,8 @@ function scte104_proto.dissector(buffer, pinfo, tree)
         splice_tree:add(f_in_flag, buffer(17,1))
         splice_tree:add(f_out_flag, buffer(18,1))
 
+        local d = buffer:range(6, 13)
+        
         pinfo.cols.info = string.format("SpliceReq: Event=%d, Program=%d, Type=%s",
             buffer(7,4):uint(),
             buffer(11,2):uint(),
