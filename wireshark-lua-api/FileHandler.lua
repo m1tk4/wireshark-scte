@@ -1,3 +1,5 @@
+---@meta
+
 -- https://www.wireshark.org/docs/wsdg_html_chunked/lua_module_File.html#lua_class_FileHandler
 
 ---@class FileHandler
@@ -12,15 +14,11 @@ FileHandler = {}
 ---@param internal_description string Descriptive text about this file format, for internal display purposes only.
 ---@param type string The type of FileHandler, "r"/"w"/"rw" for reader/writer/both, include "m" for magic, "s" for strong heuristic.
 ---@return FileHandler filehandler The newly created FileHandler object.
-function FileHandler.new(description, name, internal_description, type)
-    return FileHandler
-end
+function FileHandler.new(description, name, internal_description, type) end
 
 ---Generates a string of debug info for the FileHandler.
 ---@return string debug String of debug information.
-function FileHandler:__tostring()
-    return ""
-end
+function FileHandler:__tostring() end
 
 ---The Lua function to be called when Wireshark opens a file for reading.
 ---When later called by Wireshark, the Lua function will be given:
@@ -128,12 +126,9 @@ FileHandler.supported_comment_types = 0
 ---This function cannot be called inside the reading/writing callback functions.
 ---@param filehandler FileHandler The FileHandler object to be registered.
 ---@return number type The new type number for this file reader/writer.
-function register_filehandler(filehandler)
-    return 0
-end
+function register_filehandler(filehandler) end
 
 ---Deregister the FileHandler from Wireshark/TShark, so it no longer gets used for reading/writing/display.
 ---This function cannot be called inside the reading/writing callback functions.
 ---@param filehandler FileHandler The FileHandler object to be deregistered.
-function deregister_filehandler(filehandler)
-end
+function deregister_filehandler(filehandler) end

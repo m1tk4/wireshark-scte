@@ -1,3 +1,5 @@
+---@meta
+
 -- https://www.wireshark.org/docs/wsdg_html_chunked/lua_module_File.html#lua_class_FrameInfo
 
 ---@class FrameInfo
@@ -8,23 +10,18 @@ FrameInfo = {}
 
 ---Generates a string of debug info for the FrameInfo.
 ---@return string debug String of debug information.
-function FrameInfo:__tostring()
-    return ""
-end
+function FrameInfo:__tostring() end
 
 ---Calls wtap_setup_packet_rec().
 ---@param encap number The encapsulation type to use.
-function FrameInfo:setup_packet_rec(encap)
-end
+function FrameInfo:setup_packet_rec(encap) end
 
 ---Tells Wireshark to read directly from given file into frame data buffer, for length bytes.
 ---Returns true if succeeded, else false.
 ---@param file File The File object userdata, provided by Wireshark previously in a reading-based callback.
 ---@param length number The number of bytes to read from the file at the current cursor position.
 ---@return boolean success True if succeeded, else returns false along with the error number and string error description.
-function FrameInfo:read_data(file, length)
-    return false
-end
+function FrameInfo:read_data(file, length) end
 
 ---Table of comments in this frame.
 ---@type table|nil

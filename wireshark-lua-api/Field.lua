@@ -1,3 +1,5 @@
+---@meta
+
 -- https://www.wireshark.org/docs/wsdg_html_chunked/lua_module_Field.html#lua_class_Field
 -- https://github.com/wireshark/wireshark/blob/4988cfd31b29704411a7bd341a3034a989996943/test/lua/globals_5.0.txt#L1626
 
@@ -64,29 +66,24 @@ Field = {}
 ---Create a Field extractor.
 ---@param fieldname string The filter name of the field (e.g. ip.addr).
 ---@return Field field The field extractor.
-function Field.new(fieldname)
-    return Field()
-end
+function Field.new(fieldname) end
 
 ---Gets a Lua array table of all registered field filter names.
 ---Note: This is an expensive operation, and should only be used for troubleshooting.
 ---@return string[] fields The array table of field filter names.
-function Field.list()
-    return {}
-end
+function Field.list() end
 
 ---Obtain all values (see FieldInfo) for this field.
 ---@return FieldInfo[] fieldinfos All the values of this field.
-function Field:__call()
-    return {}
-end
+function Field:__call() end
+
+---Obtain all values (see FieldInfo) for this field.
+---@return FieldInfo[] fieldinfos All the values of this field.
+function Field() end
 
 ---Obtain a string with the field filter name.
 ---@return string name The field filter name.
-function Field:__tostring()
-    return ""
-end
-
+function Field:__tostring() end
 
 local function Field__test()
     local f = Field.new("ip.addr")

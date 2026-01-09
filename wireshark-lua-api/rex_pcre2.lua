@@ -1,3 +1,5 @@
+---@meta
+
 -- https://www.wireshark.org/docs/wsdg_html_chunked/lua_module_PCRE2.html
 -- https://rrthomas.github.io/lrexlib/manual.html
 
@@ -42,7 +44,7 @@ function rex_pcre2_regex:find(subj, init, ef) end
 ---Returns a table containing information about the compiled pattern.
 ---Keys are formed by omitting PCRE2_INFO_ prefix (e.g., "CAPTURECOUNT").
 ---@return table info Table with pattern information.
-function rex_pcre2_regex:patterninfo() return {} end
+function rex_pcre2_regex:patterninfo() end
 
 ---Matches using a DFA matching algorithm.
 ---@param subj string Subject string to search in.
@@ -59,7 +61,7 @@ function rex_pcre2_regex:dfa_exec(subj, init, ef, ovecsize, wscount) end
 ---@param options? number JIT compilation options (bitwise OR). Default is PCRE2_JIT_COMPLETE.
 ---@return boolean success True on success.
 ---@return string|nil error Error message on failure.
-function rex_pcre2_regex:jit_compile(options) return true end
+function rex_pcre2_regex:jit_compile(options) end
 
 ---@class rex_pcre2
 ---PCRE2 regular expression library (Lrexlib)
@@ -70,7 +72,7 @@ rex_pcre2 = {}
 ---@param cf? number|string Compilation flags (bitwise OR) or string of flag characters (i,m,s,x,U). Default is 0.
 ---@param lo? string|userdata Locale string (e.g., "French_France.1252") or userdata from maketables(). Default is built-in PCRE2 tables.
 ---@return rex_pcre2_regex regex Compiled regular expression object.
-function rex_pcre2.new(patt, cf, lo) return rex_pcre2_regex() end
+function rex_pcre2.new(patt, cf, lo) end
 
 
 ---Searches for the first match of pattern in subject.
@@ -99,7 +101,7 @@ function rex_pcre2.find(subj, patt, init, cf, ef) end
 ---@param cf? number|string Compilation flags (bitwise OR) or string. Default is 0.
 ---@param ef? number Execution flags (bitwise OR). Default is 0.
 ---@return function iterator Iterator function returning captures on each iteration.
-function rex_pcre2.gmatch(subj, patt, cf, ef) return function() return {} end end
+function rex_pcre2.gmatch(subj, patt, cf, ef) end
 
 ---Replaces all matches of pattern in subject.
 ---@param subj string Subject string.
@@ -111,7 +113,7 @@ function rex_pcre2.gmatch(subj, patt, cf, ef) return function() return {} end en
 ---@return string result The subject string with substitutions made.
 ---@return number num_matches Number of matches found.
 ---@return number num_substitutions Number of substitutions made.
-function rex_pcre2.gsub(subj, patt, repl, n, cf, ef) return "",0,0 end
+function rex_pcre2.gsub(subj, patt, repl, n, cf, ef) end
 
 ---Returns an iterator for splitting subject by separator pattern.
 ---@param subj string Subject string to split.
@@ -119,7 +121,7 @@ function rex_pcre2.gsub(subj, patt, repl, n, cf, ef) return "",0,0 end
 ---@param cf? number|string Compilation flags (bitwise OR) or string. Default is 0.
 ---@param ef? number Execution flags (bitwise OR). Default is 0.
 ---@return function iterator Iterator function returning subject sections and captures.
-function rex_pcre2.split(subj, sep, cf, ef) return function() return {} end end
+function rex_pcre2.split(subj, sep, cf, ef) end
 
 ---Counts the number of matches of pattern in subject.
 ---@param subj string Subject string.
@@ -127,27 +129,27 @@ function rex_pcre2.split(subj, sep, cf, ef) return function() return {} end end
 ---@param cf? number|string Compilation flags (bitwise OR) or string. Default is 0.
 ---@param ef? number Execution flags (bitwise OR). Default is 0.
 ---@return number count Number of matches found.
-function rex_pcre2.count(subj, patt, cf, ef) return 0 end
+function rex_pcre2.count(subj, patt, cf, ef) end
 
 ---Returns a table of PCRE2 constants (flags).
 ---Keys are constant names with PCRE2_ prefix omitted (e.g., "CASELESS" for PCRE2_CASELESS).
 ---@param tb? table Optional table to fill with results. Default creates new table.
 ---@return table flags Table of constant names to values.
-function rex_pcre2.flags(tb) return {} end
+function rex_pcre2.flags(tb) end
 
 ---@class userdata
 userdata = {}
 
 ---Creates character tables for the current locale.
 ---@return userdata tables Character tables userdata for use with new().
-function rex_pcre2.maketables() return userdata() end
+function rex_pcre2.maketables() end
 
 ---Returns PCRE2 library configuration parameters.
 ---Keys are formed by omitting PCRE2_CONFIG_ prefix.
 ---@param tb? table Optional table to fill with results. Default creates new table.
 ---@return table config Table of configuration parameter names to values.
-function rex_pcre2.config(tb) return {} end
+function rex_pcre2.config(tb) end
 
 ---Returns the PCRE2 library version string.
 ---@return string version The PCRE2 library version and release date.
-function rex_pcre2.version() return "" end
+function rex_pcre2.version() end

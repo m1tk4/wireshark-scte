@@ -1,3 +1,5 @@
+---@meta
+
 -- https://www.wireshark.org/docs/wsdg_html_chunked/lua_module_File.html#lua_class_CaptureInfoConst
 
 ---@class CaptureInfoConst
@@ -8,9 +10,7 @@ CaptureInfoConst = {}
 
 ---Generates a string of debug info for the CaptureInfoConst.
 ---@return string debug String of debug information.
-function CaptureInfoConst:__tostring()
-    return ""
-end
+function CaptureInfoConst:__tostring() end
 
 ---The file type.
 ---@type number

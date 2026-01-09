@@ -18,6 +18,7 @@ local f_protocol  = ProtoField.uint8("scte104.protocol_version", "Protocol Versi
 local f_msg_type  = ProtoField.uint8("scte104.msg_type", "Message Type", base.DEC)
 local f_opid      = ProtoField.uint16("scte104.opid", "Operation ID", base.DEC)
 
+
 -- Lookup table for splice_insert_type (Table 8-6)
 local splice_type_vals = {
     [0] = "Splice Null",
@@ -28,11 +29,6 @@ local splice_type_vals = {
     [5] = "Insert Tier",
     [255] = "Proprietary Command"
 }
-
-local m = MyType:new()
-m = MyType:more()
-m:something()  -- just to avoid unused method warning
-
 
 -- Splice Request fields (namespaced under scte104.splice.*)
 local f_splice_type    = ProtoField.uint8("scte104.splice.type", "Splice Insert Type", base.DEC, splice_type_vals)
@@ -49,8 +45,14 @@ scte104_proto.fields = {
     f_pre_roll, f_break_duration, f_in_flag, f_out_flag
 }
 
+
+local f = ENC_ANTI_HOST_ENDIAN
+
+
+
 function scte104_proto.dissector(buffer, pinfo, tree)
-    pinfo.cols.protocol = "SCTE-104"
+    
+
     if buffer:len() < 8 then return end
 
     local subtree = tree:add(scte104_proto, buffer(), "SCTE-104 Message")
@@ -86,4 +88,6 @@ end
 
 -- Register dissector to TCP port (example: 5167) 
 local tcp_port = DissectorTable.get("tcp.port")
-tcp_port:add(5167, scte104_proto)
+if tcp_port then 
+    tcp_port:add(5167, scte104_proto)
+end

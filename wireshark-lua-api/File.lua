@@ -1,3 +1,5 @@
+---@meta
+
 -- https://www.wireshark.org/docs/wsdg_html_chunked/lua_module_File.html#lua_class_File
 
 ---@class File
@@ -14,39 +16,29 @@ File = {}
 ---See Lua 5.x ref manual for file:read().
 ---@param ... any Format specifiers.
 ---@return string|number|nil data The read data.
-function File:read(...)
-    return ""
-end
+function File:read(...) end
 
 ---Seeks in the File, similar to Lua's file:seek().
 ---See Lua 5.x ref manual for file:seek().
 ---@param whence? string Optional. The base position ("set", "cur", or "end"). Default is "cur".
 ---@param offset? number Optional. The offset from whence. Default is 0.
 ---@return number position The current file cursor position as a number.
-function File:seek(whence, offset)
-    return 0
-end
+function File:seek(whence, offset) end
 
 ---Lua iterator function for retrieving ASCII File lines, similar to Lua's file:lines().
 ---See Lua 5.x ref manual for file:lines().
 ---@return function iterator The iterator function.
-function File:lines()
-    return function() return nil end
-end
+function File:lines() end
 
 ---Writes to the File, similar to Lua's file:write().
 ---See Lua 5.x ref manual for file:write().
 ---@param ... any Data to write.
 ---@return File file The File object on success.
-function File:write(...)
-    return self
-end
+function File:write(...) end
 
 ---Generates a string of debug info for the File object.
 ---@return string debug String of debug information.
-function File:__tostring()
-    return ""
-end
+function File:__tostring() end
 
 ---Whether the File is compressed or not.
 ---@type boolean

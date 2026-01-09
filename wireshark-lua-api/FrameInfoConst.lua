@@ -1,3 +1,5 @@
+---@meta
+
 -- https://www.wireshark.org/docs/wsdg_html_chunked/lua_module_File.html#lua_class_FrameInfoConst
 
 ---@class FrameInfoConst
@@ -7,18 +9,14 @@ FrameInfoConst = {}
 
 ---Generates a string of debug info for the FrameInfo.
 ---@return string debug String of debug information.
-function FrameInfoConst:__tostring()
-    return ""
-end
+function FrameInfoConst:__tostring() end
 
 ---Tells Wireshark to write directly to given file from the frame data buffer, for length bytes.
 ---Returns true if succeeded, else false.
 ---@param file File The File object userdata, provided by Wireshark previously in a writing-based callback.
 ---@param length? number Optional. The number of bytes to write to the file at the current cursor position, or all if not supplied.
 ---@return boolean success True if succeeded, else returns false along with the error number and string error description.
-function FrameInfoConst:write_data(file, length)
-    return false
-end
+function FrameInfoConst:write_data(file, length) end
 
 ---The first string comment for the packet, if any; nil if there is no comment.
 ---@type string|nil

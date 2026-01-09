@@ -1,3 +1,5 @@
+---@meta
+
 -- https://www.wireshark.org/docs/wsdg_html_chunked/lua_module_Gui.html
 
 ---@class ProgDlg
@@ -12,27 +14,20 @@ ProgDlg = {}
 ---@param title? string Title of the progress bar. Defaults to "Progress".
 ---@param task? string Optional task name, which will be appended to the title. Defaults to empty string.
 ---@return ProgDlg progdlg The newly created ProgDlg object.
-function ProgDlg.new(title, task)
-    return ProgDlg()
-end
+function ProgDlg.new(title, task) end
 
 ---Sets the progress dialog's progress bar position based on percentage done.
 ---@param progress number Progress value (must be between 0.0 and 1.0 inclusive).
 ---@param task? string Task name. Currently ignored. Defaults to empty string.
-function ProgDlg:update(progress, task)
-end
+function ProgDlg:update(progress, task) end
 
 ---Checks whether the user has pressed the Cancel button.
 ---@return boolean stopped True if the user has asked to stop the operation, false otherwise.
-function ProgDlg:stopped()
-    return false
-end
+function ProgDlg:stopped() end
 
 ---Hides the progress bar.
 ---@return string status A string specifying whether the Progress Dialog has stopped or not.
-function ProgDlg:close()
-    return ""
-end
+function ProgDlg:close() end
 
 
 local function ProgDlg__test()

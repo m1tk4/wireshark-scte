@@ -1,3 +1,5 @@
+---@meta
+
 -- https://www.wireshark.org/docs/wsdg_html_chunked/lua_module_Gui.html
 
 ---@class TextWindow
@@ -8,68 +10,49 @@ TextWindow = {}
 ---Creates a new TextWindow text window and displays it. Requires a GUI.
 ---@param title? string Title of the new window. Defaults to "Untitled Window".
 ---@return TextWindow textwindow The newly created TextWindow object.
-function TextWindow.new(title)
-    return TextWindow()
-end
+function TextWindow.new(title) end
 
 ---Set the function that will be called when the text window closes.
 ---@param action function A Lua function to be executed when the user closes the text window.
 ---@return TextWindow textwindow The TextWindow object.
-function TextWindow:set_atclose(action)
-    return self
-end
+function TextWindow:set_atclose(action) end
 
 ---Sets the text to be displayed.
 ---@param text string The text to be displayed.
 ---@return TextWindow textwindow The TextWindow object.
-function TextWindow:set(text)
-    return self
-end
+function TextWindow:set(text) end
 
 ---Appends text to the current window contents.
 ---@param text string The text to be appended.
 ---@return TextWindow textwindow The TextWindow object.
-function TextWindow:append(text)
-    return self
-end
+function TextWindow:append(text) end
 
 ---Prepends text to the current window contents.
 ---@param text string The text to be prepended.
 ---@return TextWindow textwindow The TextWindow object.
-function TextWindow:prepend(text)
-    return self
-end
+function TextWindow:prepend(text) end
 
 ---Erases all of the text in the window.
 ---@return TextWindow textwindow The TextWindow object.
-function TextWindow:clear()
-    return self
-end
+function TextWindow:clear() end
 
 ---Get the text of the window.
 ---@return string text The TextWindow's text.
-function TextWindow:get_text()
-    return ""
-end
+function TextWindow:get_text() end
 
 ---Close the window.
-function TextWindow:close()
-end
+function TextWindow:close() end
 
 ---Make this text window editable.
 ---@param editable? boolean True to make the text editable, false otherwise. Defaults to true.
 ---@return TextWindow textwindow The TextWindow object.
-function TextWindow:set_editable(editable)
-    return self
-end
+function TextWindow:set_editable(editable) end
 
 ---Adds a button with an action handler to the text window.
 ---@param label string The button label.
 ---@param func function The Lua function to be called when the button is pressed.
 ---@return TextWindow textwindow The TextWindow object.
-function TextWindow:add_button(label, func)
-    return self
-end
+function TextWindow:add_button(label, func) end
 
 
 local function TextWindow__test()

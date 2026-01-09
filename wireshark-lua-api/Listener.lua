@@ -1,3 +1,5 @@
+---@meta
+
 -- https://www.wireshark.org/docs/wsdg_html_chunked/lua_module_Listener.html#lua_class_Listener
 
 ---@class Listener
@@ -10,26 +12,19 @@ Listener = {}
 ---@param filter string|nil A display filter to apply to the tap. The tap.packet function will be called for each matching packet (optional, default is nil which matches every packet).
 ---@param allfields boolean|nil Whether to generate all fields. Note: This impacts performance (optional, default is false).
 ---@return Listener listener The newly created Listener listener object.
-function Listener.new(tap, filter, allfields)
-    return Listener
-end
+function Listener.new(tap, filter, allfields) end
 
 ---Gets a Lua array table of all registered Listener tap names.
 ---Note: This is an expensive operation, and should only be used for troubleshooting.
 ---@return string[] tapnames The array table of registered tap names.
-function Listener.list()
-    return {}
-end
+function Listener.list() end
 
 ---Removes a tap Listener.
-function Listener:remove()
-end
+function Listener:remove() end
 
 ---Generates a string of debug info for the tap Listener.
 ---@return string info Debug info string.
-function Listener:__tostring()
-    return ""
-end
+function Listener:__tostring() end
 
 ---A function that will be called once every packet matches the Listener listener filter.
 ---When later called by Wireshark, the packet function will be given:
@@ -70,3 +65,4 @@ Listener.draw = nil
 ---```
 ---@type fun()
 Listener.reset = nil
+

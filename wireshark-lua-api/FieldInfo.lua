@@ -1,3 +1,5 @@
+---@meta
+
 -- https://www.wireshark.org/docs/wsdg_html_chunked/lua_module_Field.html#lua_class_FieldInfo
 
 ---@class FieldInfo
@@ -23,53 +25,37 @@ FieldInfo = {}
 
 ---Obtain the Length of the field.
 ---@return number len The length of the field.
-function FieldInfo:__len()
-    return 0
-end
+function FieldInfo:__len() end
 
 ---Obtain the Offset of the field.
 ---@return number offset The offset of the field.
-function FieldInfo:__unm()
-    return 0
-end
+function FieldInfo:__unm() end
 
 ---Obtain the Value of the field.
 ---@return any value The value of the field.
-function FieldInfo:__call()
-    return 0
-end
+function FieldInfo:__call() end
 
 ---The string representation of the field.
 ---@return string str The string representation.
-function FieldInfo:__tostring()
-    return ""
-end
+function FieldInfo:__tostring() end
 
 ---Checks whether lhs is within rhs.
 ---@return boolean result True if lhs is within rhs.
-function FieldInfo:__eq()
-    return false
-end
+function FieldInfo:__eq() end
 
 ---Checks whether the end byte of lhs is before the end of rhs.
 ---@return boolean result True if the end byte of lhs is before the end of rhs.
-function FieldInfo:__le()
-    return false
-end
+function FieldInfo:__le() end
 
 ---Checks whether the end byte of lhs is before the beginning of rhs.
 ---@return boolean result True if the end byte of lhs is before the beginning of rhs.
-function FieldInfo:__lt()
-    return false
-end
+function FieldInfo:__lt() end
 
 ---Obtain all fields from the current tree. Note this only gets whatever fields the underlying
 ---dissectors have filled in for this packet at this time - there may be fields applicable to the
 ---packet that simply aren't being filled in because at this time they're not needed for anything.
 ---@return FieldInfo[] fieldinfos Array of all FieldInfo objects from the current tree.
-function all_field_infos()
-    return {}
-end
+function all_field_infos() end
 
 local function FieldInfo__test()
     local f = Field.new("ip.addr")

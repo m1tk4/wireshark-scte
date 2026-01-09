@@ -1,3 +1,5 @@
+---@meta
+
 -- https://www.wireshark.org/docs/wsdg_html_chunked/lua_module_File.html#lua_class_CaptureInfo
 
 ---@class CaptureInfo
@@ -8,9 +10,7 @@ CaptureInfo = {}
 
 ---Generates a string of debug info for the CaptureInfo.
 ---@return string debug String of debug information.
-function CaptureInfo:__tostring()
-    return ""
-end
+function CaptureInfo:__tostring() end
 
 ---The packet encapsulation type for the whole file.
 ---See wtap_encaps for available types. Set to wtap_encaps.PER_PACKET if packets can have different types,
