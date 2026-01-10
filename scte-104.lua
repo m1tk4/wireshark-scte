@@ -34,11 +34,11 @@ local OPID_SINGLE_OP = {
     [0x000A] = "config_response_data()",
     [0x000B] = "provisioning_request_data()",
     [0x000C] = "provisioning_response_data()",
-    [0x000F] = "fault_request_data()",
-    [0x0010] = "fault_response_data()",     --    __
-    [0x0011] = "AS_alive_request_data()",   --  <(o )___
-    [0x0012] = "AS_alive_response_data()",  --   ( ._> /
-    [0xFFFF] = "Multiple Operation Message" --    `---'
+    [0x000F] = "fault_request_data()",               --   ЦЫП!
+    [0x0010] = "fault_response_data()",              --    __
+    [0x0011] = "AS_alive_request_data()",            --  <(o )___
+    [0x0012] = "AS_alive_response_data()",           --   ( ._> /
+    [0xFFFF] = "Multiple Operation Message"          --    `---'
 }
 
 -- Result Codes (Table 14-1)
@@ -81,6 +81,13 @@ local TIME_TYPES = {
     [3] = "GPI"
 }
 
+local TIME_TYPE_LENGTHS = {
+    [0] = 1,
+    [1] = 7,
+    [2] = 5,
+    [3] = 3
+}
+
 -- Fields
 local f = {
     opID                    = ProtoField.uint16("scte104.opID", "opID", base.HEX_DEC, OPID_SINGLE_OP),
@@ -93,6 +100,14 @@ local f = {
     DPI_PID_index           = ProtoField.uint8("scte104.DPI_PID_index", "DPI_PID_index", base.HEX_DEC),
     SCTE35_protocol_version = ProtoField.uint8("scte104.SCTE35_protocol_version", "SCTE35_protocol_version", base.DEC),
     timestamp_time_type     = ProtoField.uint8("scte104.timestamp.time_type", "time_type", base.DEC, TIME_TYPES),
+    timestamp_UTC_seconds   = ProtoField.uint32("scte104.timestamp.UTC_seconds", "UTC_seconds", base.DEC),
+    timestamp_UTC_microseconds = ProtoField.uint16("scte104.timestamp.UTC_microseconds", "UTC_microseconds", base.DEC),
+    timestamp_VITC_hours    = ProtoField.uint8("scte104.timestamp.VITC_hours", "VITC_hours", base.DEC),
+    timestamp_VITC_minutes  = ProtoField.uint8("scte104.timestamp.VITC_minutes", "VITC_minutes", base.DEC),
+    timestamp_VITC_seconds  = ProtoField.uint8("scte104.timestamp.VITC_seconds", "VITC_seconds", base.DEC),
+    timestamp_VITC_frames   = ProtoField.uint8("scte104.timestamp.VITC_frames", "VITC_frames", base.DEC),
+    timestamp_GPI_number    = ProtoField.uint8("scte104.timestamp.GPI_number", "GPI_number", base.DEC),
+    timestamp_GPI_edge      = ProtoField.uint8("scte104.timestamp.GPI_edge", "GPI_edge", base.DEC),
     num_ops                 = ProtoField.uint8("scte104.num_ops", "num_ops", base.DEC),
     sop_time                = ProtoField.absolute_time("scte104.time", "time()", base.UTC),
     sop_time_seconds        = ProtoField.uint32("scte104.time_seconds", "seconds", base.DEC),
@@ -110,9 +125,9 @@ local e = {
         expert.severity.ERROR
     ),
     out_of_range = ProtoExpert.new(
-        "scte104.out_of_range",         -- (\___/)
-        "Field value out of range",     -- (='.'=)
-        expert.group.MALFORMED,         -- (")_(")
+        "scte104.out_of_range",            -- (\___/)
+        "Field value out of range",        -- (='.'=)
+        expert.group.MALFORMED,            -- (")_(")
         expert.severity.WARN
     )
 }
@@ -156,9 +171,9 @@ function scte104_proto.dissector(buffer, pinfo, tree)
         t:add(f.DPI_PID_index, buffer(11, 2))
 
         -- fields based on message type:
-        if (opID == 0x0003 or opID == 0x0004) then              -- alive_request_data() or alive_response_data()
+        if (opID == 0x0003 or opID == 0x0004) then -- alive_request_data() or alive_response_data()
             Parse_time(buffer, 13, t)
-        elseif (opID == 0x0007) then                            -- inject_response_data()
+        elseif (opID == 0x0007) then               -- inject_response_data()
             if buffer:len() >= 14 then
                 t:add(scte104_proto, buffer(13, 1), "inject_response_data():")
                     :add(f.message_number, buffer(13, 1))
@@ -166,9 +181,10 @@ function scte104_proto.dissector(buffer, pinfo, tree)
                 t:add_proto_expert_info(e.msg_wrong_length, "not enough data for inject_response_data()")
                 return
             end
-        elseif (opID == 0x0008) then     -- inject_complete_response_data()
+        elseif (opID == 0x0008) then -- inject_complete_response_data()
             if buffer:len() >= 15 then
-                local subt = t:add(scte104_proto, buffer(13,2), "inject_complete_response_data():")
+                --local subt = t:add(scte104_proto, buffer(13,2), "inject_complete_response_data():")
+                local subt = t:add(scte104_proto, buffer(13, 2), "inject_complete_response_data():")
                 subt:add(f.message_number, buffer(13, 1))
                 subt:add(f.cue_message_count, buffer(14, 1))
             else
@@ -184,6 +200,9 @@ function scte104_proto.dissector(buffer, pinfo, tree)
         t:add(f.DPI_PID_index, buffer(7, 2))
         t:add(f.SCTE35_protocol_version, buffer(9, 1))
         local pos = Parse_timestamp(buffer, 10, t)
+        if pos == -1 then -- some error happened during timestamp() parsing
+            return
+        end
         t:add(f.num_ops, buffer(pos, 1))
     end
 
@@ -195,7 +214,6 @@ function scte104_proto.dissector(buffer, pinfo, tree)
     end
 end
 
-
 ---parses out timestamp() structure defined in 12.4
 ---returns the new offset after parsing time structure
 ---@param buffer Tvb
@@ -203,9 +221,46 @@ end
 ---@param tree TreeItem
 ---@return number
 function Parse_timestamp(buffer, offset, tree)
+    if buffer:len() < offset + 1 then
+        tree:add_proto_expert_info(e.msg_wrong_length, "not enough data for timestamp() structure")
+        return -1
+    end
     local type = buffer(offset, 1):uint()
+    if TIME_TYPE_LENGTHS[type] == nil then
+        tree:add_proto_expert_info(e.out_of_range, "unknown time_type value in timestamp() structure")
+        return -1
+    end
+    if buffer:len() < offset + TIME_TYPE_LENGTHS[type] then
+        tree:add_proto_expert_info(e.msg_wrong_length, "not enough data for timestamp() structure")
+        return -1
+    end
 
-    return offset+1
+    if type == 0 then -- No timestamp
+        tree:add(scte104_proto, buffer(offset, 1), "timestamp(): No timestamp")
+            :add(f.timestamp_time_type, buffer(offset, 1))
+    elseif type == 1 then -- UTC
+        local subt = tree:add(scte104_proto, buffer(offset, 7), "timestamp(): UTC")
+        subt:add(f.timestamp_time_type, buffer(offset, 1))
+        subt:add(f.timestamp_UTC_seconds, buffer(offset + 1, 4))
+        subt:add(f.timestamp_UTC_microseconds, buffer(offset + 5, 2))
+        local microseconds = buffer(offset + 5, 2):uint()
+        if microseconds >= 1000000 then
+            subt:add_proto_expert_info(e.out_of_range, "UTC microseconds field out of range")
+        end
+    elseif type == 2 then -- VITC
+        local subt = tree:add(scte104_proto, buffer(offset, 5), "timestamp(): VITC")
+        subt:add(f.timestamp_time_type, buffer(offset, 1))
+        subt:add(f.timestamp_VITC_hours, buffer(offset + 1, 1))
+        subt:add(f.timestamp_VITC_minutes, buffer(offset + 2, 1))
+        subt:add(f.timestamp_VITC_seconds, buffer(offset + 3, 1))
+        subt:add(f.timestamp_VITC_frames, buffer(offset + 4, 1))
+    elseif type == 3 then -- GPI
+        local subt = tree:add(scte104_proto, buffer(offset, 3), "timestamp(): GPI")
+        subt:add(f.timestamp_time_type, buffer(offset, 1))
+        subt:add(f.timestamp_GPI_number, buffer(offset + 1, 1))
+        subt:add(f.timestamp_GPI_edge, buffer(offset + 2, 1))
+    end
+    return offset + TIME_TYPE_LENGTHS[type]
 end
 
 ---parses out time() structure defined in 12.4
