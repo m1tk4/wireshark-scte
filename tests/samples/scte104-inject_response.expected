@@ -1,0 +1,17 @@
+    1   0.000000 10.101.17.103 → 10.101.18.96 SCTE104 68 SOP msgNo:2 opID:0x0007 inject_response_data()
+Frame 1: Packet, 68 bytes on wire (544 bits), 68 bytes captured (544 bits)
+Ethernet II, Src: Dell_74:67:ae (4c:d9:8f:74:67:ae), Dst: Dell_eb:d7:90 (f0:d4:e2:eb:d7:90)
+Internet Protocol Version 4, Src: 10.101.17.103, Dst: 10.101.18.96
+Transmission Control Protocol, Src Port: 5167, Dst Port: 32948, Seq: 1, Ack: 1, Len: 14
+SCTE-104 Single Operation Message: inject_response_data()
+    opID: inject_response_data() (0x0007)
+    messageSize: 14
+    result: Successful Response (100)
+    result_extension: 0 (0x00)
+    protocol_version: 0
+    AS_index: 0 (0x00)
+    message_number: 2
+    DPI_PID_index: 0xfa0 (4000)
+    inject_response_data():
+        message_number: 176
+
