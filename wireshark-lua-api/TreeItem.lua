@@ -148,12 +148,13 @@ function TreeItem:add_packet_field(protofield, tvbrange, encoding, label) end
 --- If the ProtoField represents a numeric value (int, uint or float), it's treated as Big Endian.
 ---@param protofield ProtoField The ProtoField field to add
 ---@param tvbrange TvbRange The TvbRange of bytes in the packet this tree item covers
+---@param value? number|Int64|UInt64|NSTime The field's value - if supplied will override the value extracted from the TvbRange
 ---@return TreeItem # The new child TreeItem
-function TreeItem:add(protofield, tvbrange) end
+function TreeItem:add(protofield, tvbrange, value) end
 
 --- Adds a child item to this tree item, returning the new child TreeItem.
 ---@param protofield ProtoField The ProtoField field to add
----@param value number|Int64|UInt64 The field's value
+---@param value number|Int64|UInt64|NSTime The field's value
 ---@return TreeItem # The new child TreeItem
 function TreeItem:add(protofield, value) end
 
@@ -173,12 +174,13 @@ function TreeItem:add(label) end
 --- If the ProtoField represents a numeric value (int, uint or float), it's treated as Little Endian.
 ---@param protofield ProtoField The ProtoField field to add
 ---@param tvbrange TvbRange The TvbRange of bytes in the packet this tree item covers
+---@param value? number|Int64|UInt64|NSTime The field's value - if supplied will override the value extracted from the TvbRange
 ---@return TreeItem # The new child TreeItem
-function TreeItem:add_le(protofield, tvbrange) end
+function TreeItem:add_le(protofield, tvbrange, value) end
 
 --- Adds a child item to this tree item, returning the new child TreeItem.
 ---@param protofield ProtoField The ProtoField field to add
----@param value number|Int64|UInt64 The field's value
+---@param value number|Int64|UInt64|NSTime The field's value
 ---@return TreeItem # The new child TreeItem
 function TreeItem:add_le(protofield, value) end
 

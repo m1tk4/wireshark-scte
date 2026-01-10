@@ -1,129 +1,243 @@
 --[[
 
-    SCTE-104 TCP Lua Dissector with SPLICE_REQUEST_DATA parsing + lookup tables
+    SCTE-104 TCP Wireshark Dissector
 
-]]--
+    This dissector implements SCTE-104 2023 edition protocol over TCP.
+    https://account.scte.org/documents/6939/ANSI-SCTE_104_2023.pdf
 
-set_plugin_info({
-    version = "1.0.0",
-    description = "SCTE-104 Protocol Dissector",
-    author = "Dimitri Tarassenko",
-    repository = "https://github.com/m1tk4/wireshark-scte"
-})
+    Only Simple Profile operations are fully parsed, the rest will
+    be indicated but not dissected in detail.
 
+]]                                                         --
+
+set_plugin_info({                                          --    /\_/\
+    version = "1.0.0",                                     --   ( o.o )
+    description = "SCTE-104 Protocol Dissector",           --    > ^ <
+    author = "Dimitri Tarassenko",                         --   /|   |\
+    repository = "https://github.com/m1tk4/wireshark-scte" --  (_|   |_)~~
+})                                                         --   ^^   ^^
+
+-- NOTE: all references to chapters in SCTE-104 standard are as per 2023 edition.
 
 local scte104_proto = Proto("scte104", "SCTE-104 Protocol")
 
--- Header fields
-local f_msg_len   = ProtoField.uint16("scte104.msg_len", "Message Length", base.DEC)
-local f_protocol  = ProtoField.uint8("scte104.protocol_version", "Protocol Version", base.DEC)
-local f_msg_type  = ProtoField.uint8("scte104.msg_type", "Message Type", base.DEC)
-local f_opid      = ProtoField.uint16("scte104.opid", "Operation ID", base.HEX_DEC)
-
-
--- Lookup table for splice_insert_type (Table 8-6)
-local splice_type_vals = {
-    [0] = "Splice Null",
-    [1] = "Splice Insert (Avail)",
-    [2] = "Insert Descriptor",
-    [3] = "Insert DTMF Descriptor",
-    [4] = "Insert Avail Descriptor",
-    [5] = "Insert Tier",
-    [255] = "Proprietary Command"
+-- opID Assigned Values for single_operation_message (Table 8-1)
+local OPID_SINGLE_OP = {
+    [0x0000] = "general_response_data()",
+    [0x0001] = "init_request_data()",
+    [0x0002] = "init_response_data()",
+    [0x0003] = "alive_request_data()",
+    [0x0004] = "alive_response_data()",
+    [0x0007] = "inject_response_data()",
+    [0x0008] = "inject_complete_response_data()",
+    [0x0009] = "config_request_data()",
+    [0x000A] = "config_response_data()",
+    [0x000B] = "provisioning_request_data()",
+    [0x000C] = "provisioning_response_data()",
+    [0x000F] = "fault_request_data()",
+    [0x0010] = "fault_response_data()",     --    __
+    [0x0011] = "AS_alive_request_data()",   --  <(o )___
+    [0x0012] = "AS_alive_response_data()",  --   ( ._> /
+    [0xFFFF] = "Multiple Operation Message" --    `---'
 }
 
--- Splice Request fields (namespaced under scte104.splice.*)
-local f_splice_type    = ProtoField.uint8("scte104.splice.type", "Splice Insert Type", base.DEC, splice_type_vals)
-local f_event_id       = ProtoField.uint32("scte104.splice.event_id", "Splice Event ID", base.DEC)
-local f_program_id     = ProtoField.uint16("scte104.splice.program_id", "Unique Program ID", base.DEC)
-local f_pre_roll       = ProtoField.uint16("scte104.splice.pre_roll_time", "Pre-roll Time (ms)", base.DEC)
-local f_break_duration = ProtoField.uint16("scte104.splice.break_duration", "Break Duration (s)", base.DEC)
-local f_in_flag        = ProtoField.uint8("scte104.splice.in_flag", "In Point Flag", base.DEC)
-local f_out_flag       = ProtoField.uint8("scte104.splice.out_flag", "Out Point Flag", base.DEC)
+-- Result Codes (Table 14-1)
+local RESULT_CODES = {
+    [100] = "Successful Response",
+    [101] = "Access Denied-Injector not authorized for DPI service",
+    [102] = "CW index does not have Code Word",
+    [103] = "DPI has been de-provisioned",
+    [104] = "DPI not supported",
+    [105] = "Duplicate service name",
+    [106] = "Duplicate service name is OK",
+    [107] = "Encryption not supported",
+    [108] = "Illegal shared value of DPI PID index found",
+    [109] = "Inconsistent value of DPI PID index found",
+    [110] = "Injector is already in use",
+    [111] = "Injector is not provisioned to service this AS",
+    [112] = "Injector Not Provisioned For DPI",
+    [113] = "Injector will be replaced",
+    [114] = "Invalid Message Size",
+    [115] = "Invalid Message Syntax",
+    [116] = "Invalid Version",
+    [117] = "No fault found",
+    [118] = "Service name is missing",
+    [119] = "Shared value of DPI PID index not found",
+    [120] = "Splice Request Failed - Unknown Failure",
+    [121] = "Splice Request Is Rejected Bad splice_request parameter",
+    [122] = "Splice Request Was Too Late - pre-roll is too small",
+    [123] = "Time type unsupported",
+    [124] = "Unknown Failure",
+    [125] = "Unknown opID",
+    [126] = "Unknown value for DPI_PID_index",
+    [127] = "Version Mismatch",
+    [128] = "Proxy Response"
+}
 
+local TIME_TYPES = {
+    [0] = "None",
+    [1] = "UTC",
+    [2] = "VITC",
+    [3] = "GPI"
+}
+
+-- Fields
 local f = {
-    pre = ProtoField.uint8("scte104.splice.pre", "Pre", base.DEC),
-    post = ProtoField.uint8("scte104.splice.post", "Post", base.DEC)
+    opID                    = ProtoField.uint16("scte104.opID", "opID", base.HEX_DEC, OPID_SINGLE_OP),
+    messageSize             = ProtoField.uint16("scte104.messageSize", "messageSize", base.DEC),
+    result                  = ProtoField.uint8("scte104.result", "result", base.DEC_HEX, RESULT_CODES),
+    result_extension        = ProtoField.uint8("scte104.result_extension", "result_extension", base.DEC_HEX),
+    protocol_version        = ProtoField.uint8("scte104.protocol_version", "protocol_version", base.DEC),
+    AS_index                = ProtoField.uint8("scte104.AS_index", "AS_index", base.DEC_HEX),
+    message_number          = ProtoField.uint8("scte104.message_number", "message_number", base.DEC),
+    DPI_PID_index           = ProtoField.uint8("scte104.DPI_PID_index", "DPI_PID_index", base.HEX_DEC),
+    SCTE35_protocol_version = ProtoField.uint8("scte104.SCTE35_protocol_version", "SCTE35_protocol_version", base.DEC),
+    timestamp_time_type     = ProtoField.uint8("scte104.timestamp.time_type", "time_type", base.DEC, TIME_TYPES),
+    num_ops                 = ProtoField.uint8("scte104.num_ops", "num_ops", base.DEC),
+    sop_time                = ProtoField.absolute_time("scte104.time", "time()", base.UTC),
+    sop_time_seconds        = ProtoField.uint32("scte104.time_seconds", "seconds", base.DEC),
+    sop_time_microseconds   = ProtoField.uint32("scte104.time_microseconds", "microseconds", base.DEC),
+    cue_message_count       = ProtoField.uint8("scte104.cue_message_count", "cue_message_count", base.DEC)
 }
+scte104_proto.fields = f
 
-
-
-scte104_proto.fields = {
-    f_msg_len, f_protocol, f_msg_type, f_opid,
-    f_splice_type, f_event_id, f_program_id,
-    f_pre_roll, f_break_duration, f_in_flag, f_out_flag, f.pre, f.post
+-- Expert Info Constants
+local e = {
+    msg_wrong_length = ProtoExpert.new(
+        "scte104.malformed",
+        "Message size exceeds captured length",
+        expert.group.MALFORMED,
+        expert.severity.ERROR
+    ),
+    out_of_range = ProtoExpert.new(
+        "scte104.out_of_range",         -- (\___/)
+        "Field value out of range",     -- (='.'=)
+        expert.group.MALFORMED,         -- (")_(")
+        expert.severity.WARN
+    )
 }
-
-
-local f = ENC_ANTI_HOST_ENDIAN
-
-
+scte104_proto.experts = e
 
 function scte104_proto.dissector(buffer, pinfo, tree)
-    
-
     if buffer:len() < 8 then return end
 
-    local subtree = tree:add(scte104_proto, buffer(), "SCTE-104 Message")
+    pinfo.cols.protocol = "SCTE104"
 
-    subtree:add(f_msg_len, buffer:range(0,2))
-    subtree:add_packet_field(f_msg_len, buffer(0,2), ENC_BIG_ENDIAN)
-    subtree:add(f_protocol, buffer(2,1))
-    subtree:add(f_msg_type, buffer(3,1))
-    
-    -- all of these are actually valid
-    subtree:add(f_opid, buffer:range(4,2))
-    subtree:add(f_opid, 0xFFFFF)
-    -- subtree:add(f_opid, "something") -- this fails
-    -- subtree:add(f_opid, buffer(4,2), "something") -- this fails too
-    subtree:add("ddede") -- valid use of just a label, but not parsed correctly
-    --[[
-    subtree:add(0x32232,"3322","dede")
-    subtree:add(0x32232,"3322")
-    subtree:add(43.434*212,"floast")
-    subtree:add("floast", 43.434*212+22)
-    subtree:add("bool", true, 3 ,"dede") -- boolean will be omitted but doesn't error
-        :add("dede"):prepend_text("prefix ")
-    subtree:add("ddd", buffer:range(0,2):int(),"de")
-    ]]--
+    local opID = buffer(0, 2):uint()
+    local messageSize = buffer(2, 2):uint()
+    local MOP = (opID == 0xFFFF)
+    local SOP = (opID ~= 0xFFFF)
 
-    subtree:add("expert:"):add_expert_info(PI_CHECKSUM, expert.severity.ERROR, "checksum error lalala")
+    -- Single Operation Message
+    local t = nil
+    if (SOP) then
+        t = tree:add(scte104_proto, buffer(),
+            "SCTE-104 Single Operation Message: " .. (OPID_SINGLE_OP[opID] or "Unknown OPID"))
+    else
+        t = tree:add(scte104_proto, buffer(), "SCTE-104 Multiple Operation Message")
+    end
 
+    t:add(f.opID, buffer(0, 2))
+    t:add(f.messageSize, buffer(2, 2))
 
-    
-    local msg_type = buffer(3,1):uint()
-    local opid     = buffer(4,2):uint()
+    if (messageSize > buffer:len()) then
+        t:add_proto_expert_info(e.msg_wrong_length)
+        return
+    end
 
-    -- Example: OPID for Splice Request (commonly 0x0100)
-    if opid == 0x0100 then
-        local splice_tree = subtree:add(scte104_proto, buffer(6), "Splice Request Data") -- 3- parameter variant with Proto!
+    local message_number = 0
+    if (SOP) then
+        t:add(f.result, buffer(4, 2))
+        t:add(f.result_extension, buffer(6, 2))
+        t:add(f.protocol_version, buffer(8, 1))
+        t:add(f.AS_index, buffer(9, 1))
+        t:add(f.message_number, buffer(10, 1))
+        message_number = buffer(10, 1):uint()
+        t:add(f.DPI_PID_index, buffer(11, 2))
 
-        splice_tree:add(f_splice_type, buffer(6,1))
-        splice_tree:add(buffer(6,1),buffer(3,3))
-        splice_tree:add(f_event_id, buffer(7,4))
-        splice_tree:add(f_program_id, buffer(11,2))
-        splice_tree:add(f_pre_roll, buffer(13,2))
-        splice_tree:add(f_break_duration, buffer(15,2))
-        splice_tree:add(f_in_flag, buffer(17,1))
-        splice_tree:add(f_out_flag, buffer(18,1))
+        -- fields based on message type:
+        if (opID == 0x0003 or opID == 0x0004) then              -- alive_request_data() or alive_response_data()
+            Parse_time(buffer, 13, t)
+        elseif (opID == 0x0007) then                            -- inject_response_data()
+            if buffer:len() >= 14 then
+                t:add(scte104_proto, buffer(13, 1), "inject_response_data():")
+                    :add(f.message_number, buffer(13, 1))
+            else
+                t:add_proto_expert_info(e.msg_wrong_length, "not enough data for inject_response_data()")
+                return
+            end
+        elseif (opID == 0x0008) then     -- inject_complete_response_data()
+            if buffer:len() >= 15 then
+                local subt = t:add(scte104_proto, buffer(13,2), "inject_complete_response_data():")
+                subt:add(f.message_number, buffer(13, 1))
+                subt:add(f.cue_message_count, buffer(14, 1))
+            else
+                t:add_proto_expert_info(e.msg_wrong_length, "not enough data for inject_complete_response_data()")
+                return
+            end
+        end
+    else -- MOP
+        t:add(f.protocol_version, buffer(4, 1))
+        t:add(f.AS_index, buffer(5, 1))
+        t:add(f.message_number, buffer(6, 1))
+        message_number = buffer(6, 1):uint()
+        t:add(f.DPI_PID_index, buffer(7, 2))
+        t:add(f.SCTE35_protocol_version, buffer(9, 1))
+        local pos = Parse_timestamp(buffer, 10, t)
+        t:add(f.num_ops, buffer(pos, 1))
+    end
 
-        local d = buffer:range(6, 12)
-        
-        pinfo.cols.info = string.format("SpliceReq: Event=%d, Program=%d, Type=%s",
-            buffer(7,4):uint(),
-            buffer(11,2):uint(),
-            splice_type_vals[buffer(6,1):uint()] or "Unknown")
-    else 
-        local some_tree = subtree:add(scte104_proto, buffer(6), "Data") -- 3- parameter variant with Proto!
-        some_tree:add("some stuff")
-        :add(f_splice_type, buffer(6,1))
-        :add(f_event_id, buffer(7,4))
-        pinfo.cols.info = string.format("MsgType=%d, OPID=%d WTF2ee3", msg_type, opid+1)
+    -- Set the packet Info column
+    if (opID == 0xFFFF) then
+        pinfo.cols.info = string.format("MOP")
+    else
+        pinfo.cols.info = string.format("SOP msgNo:%d opID:0x%04X %s", message_number, opID, OPID_SINGLE_OP[opID] or "")
     end
 end
 
--- Register dissector to TCP port (example: 5167) 
+
+---parses out timestamp() structure defined in 12.4
+---returns the new offset after parsing time structure
+---@param buffer Tvb
+---@param offset number
+---@param tree TreeItem
+---@return number
+function Parse_timestamp(buffer, offset, tree)
+    local type = buffer(offset, 1):uint()
+
+    return offset+1
+end
+
+---parses out time() structure defined in 12.4
+---returns the new offset after parsing time structure
+---@param buffer Tvb
+---@param offset number
+---@param tree TreeItem
+---@return number
+function Parse_time(buffer, offset, tree)
+    if buffer:len() < offset + 8 then
+        tree:add_proto_expert_info(e.msg_wrong_length, "not enough data for time() structure")
+        return offset
+    end
+
+    local seconds = buffer(offset, 4):uint()
+    local microseconds = buffer(offset + 4, 4):uint()
+    local t = NSTime.new(
+        seconds + 315964800,                -- some weird number of seconds between Unix Epoch and NTP epoch
+        --buffer(offset, 4):uint() + 315964782, -- Middleman is 18 seconds off from this. Possibly 9 leap seconds he's off and 9 seconds Austronaut is off?
+        buffer(offset + 4, 4):uint() * 1000 -- microseconds to nanoseconds
+    )
+    local subt = tree:add(f.sop_time, buffer(offset, 8), t)
+    subt:add(f.sop_time_seconds, buffer(offset, 4))
+    subt:add(f.sop_time_microseconds, buffer(offset + 4, 4))
+    if microseconds >= 1000000 then
+        subt:add_proto_expert_info(e.out_of_range, "microseconds field out of range")
+    end
+    return offset + 8
+end
+
+-- Register dissector to TCP port (example: 5167)
 local tcp_port = DissectorTable.get("tcp.port")
-if tcp_port then 
+if tcp_port then
     tcp_port:add(5167, scte104_proto)
 end
