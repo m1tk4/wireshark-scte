@@ -5,13 +5,38 @@ import path from "path";
 import { runTshark } from "./helpers/runTShark.js";
 
 const samplesDir = path.resolve("tests/samples");
+const fileMask = process.argv[2];
+
+// Simple glob matching (supports * wildcard)
+function matchesMask(filename, mask) {
+  if (!mask) return true; // No mask means match all
+  
+  // Convert glob pattern to regex
+  const regexPattern = mask
+    .replace(/[.+?^${}()|[\]\\]/g, '\\$&') // Escape special regex chars
+    .replace(/\*/g, '.*'); // Convert * to .*
+  
+  const regex = new RegExp(`^${regexPattern}$`, 'i');
+  return regex.test(filename);
+}
 
 async function updateExpectedFiles() {
-  const pcaps = fs.readdirSync(samplesDir).filter(f => f.endsWith(".pcap"));
+  let allPcaps = fs.readdirSync(samplesDir).filter(f => f.endsWith(".pcap"));
   
-  console.log(`Found ${pcaps.length} .pcap file(s) to process\n`);
+  // Filter by mask if provided
+  if (fileMask) {
+    allPcaps = allPcaps.filter(pcap => matchesMask(pcap, fileMask));
+    console.log(`Filter: ${fileMask}`);
+  }
   
-  for (const pcap of pcaps) {
+  if (allPcaps.length === 0) {
+    console.log("No matching .pcap files found");
+    process.exit(0);
+  }
+  
+  console.log(`Found ${allPcaps.length} .pcap file(s) to process\n`);
+  
+  for (const pcap of allPcaps) {
     try {
       const expectedFile = pcap.replace(".pcap", ".expected");
       const expectedPath = path.join(samplesDir, expectedFile);

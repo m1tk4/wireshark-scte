@@ -14,6 +14,12 @@ describe("Wireshark Dissector Test Suite", function () {
     const name = pcap.replace(".pcap", ".expected");
     const expectedPath = path.join(samplesDir, name);
     
+    // Skip if .expected file doesn't exist
+    if (!fs.existsSync(expectedPath)) {
+      it.skip(`skipped ${pcap} (no .expected file)`);
+      continue;
+    }
+    
     // Extract dissector name from first chunk of filename (before first "-")
     const dissectorName = pcap.split("-")[0];
     const luaDissector = path.resolve(`${dissectorName}.lua`);
