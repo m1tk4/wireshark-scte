@@ -1,0 +1,15 @@
+    1   0.000000    127.0.0.1 → 127.0.0.1    SCTE104 57 SOP msgNo:1 opID:0x0001 init_request_data()
+Frame 1: Packet, 57 bytes on wire (456 bits), 57 bytes captured (456 bits)
+Null/Loopback
+Internet Protocol Version 4, Src: 127.0.0.1, Dst: 127.0.0.1
+Transmission Control Protocol, Src Port: 56176, Dst Port: 5167, Seq: 1, Ack: 1, Len: 13
+SCTE-104 Single Operation Message: init_request_data()
+    opID: init_request_data() (0x0001)
+    messageSize: 13
+    result: Unknown (65535)
+    result_extension: 65535 (0xffff)
+    protocol_version: 0
+    AS_index: 0 (0x00)
+    message_number: 1
+    DPI_PID_index: 0x00 (0)
+

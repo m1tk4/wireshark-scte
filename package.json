@@ -1,0 +1,17 @@
+{
+  "name": "wireshark-dissector",
+  "type": "module",
+  "scripts": {
+    "test": "mocha tests/**/*.spec.js",
+    "update-expected": "node tests/update_expected.js",
+    "watch-sample": "node tests/watch_sample.js",
+    "wireshark": "node tests/run_wireshark.js"
+  },
+  "devDependencies": {
+    "@types/chai": "^5.2.3",
+    "@types/diff": "^7.0.2",
+    "chai": "^5.0.0",
+    "diff": "^5.1.0",
+    "mocha": "^10.0.0"
+  }
+}
