@@ -16,7 +16,15 @@ param(
 )
 
 $tsharkPath = 'C:\Program Files\Wireshark\tshark.exe'
-$luaScript = Join-Path $PSScriptRoot '..\scte-104.lua'
+$projectRoot = Split-Path $PSScriptRoot -Parent
+
+# Get all .lua files from project root
+$luaFiles = Get-ChildItem -Path $projectRoot -Filter "*.lua" -File
+$luaScriptArgs = @()
+foreach ($file in $luaFiles) {
+    $luaScriptArgs += "-X"
+    $luaScriptArgs += "lua_script:$($file.FullName)"
+}
 
 # If CaptureFile is just a filename (not a path), look in captures subfolder
 if (-not (Split-Path $CaptureFile)) {
@@ -30,9 +38,9 @@ function Invoke-LuaDissectorTest {
     if ($Frame -gt 0) {
         $filter += " and frame.number == $Frame"
     }
-    & $tsharkPath -X "lua_script:$luaScript" -r $captureFile -Y $filter
+    & $tsharkPath @luaScriptArgs -r $captureFile -Y $filter
     Write-Host ("-" * ($Host.UI.RawUI.WindowSize.Width-1)) -ForegroundColor DarkGray
-    & $tsharkPath -X "lua_script:$luaScript" -r $captureFile -Y $filter -O scte104 -P | Select-Object -Skip 5
+    & $tsharkPath @luaScriptArgs -r $captureFile -Y $filter -O scte104 -P | Select-Object -Skip 5
 }
 
 if ($Watch) {
