@@ -11,8 +11,8 @@
             "-Watch",
             "-CaptureFile",
             "scte104-init-alive.pcap",
-            "-Frame",
-            "8"
+            //"-Frame",
+            //"8"
         ],
         "isBackground": true,
         "problemMatcher": [],
