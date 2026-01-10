@@ -10,3 +10,5 @@ These type definitions are based on the official Wireshark documentation:
 
 ## TODO
 - FieldInfo is still wonky
+- Parser doesn't seem to understand object._call() semantics used in TvbRange - i.e. when we do buffer(x,y) and use it as a range.
+ 
