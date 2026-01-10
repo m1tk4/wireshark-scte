@@ -24,16 +24,6 @@
             "reveal": "never",
             "panel": "dedicated"
         }
-    },
-    {
-        "label": "Run Wireshark",
-        "type": "npm",
-        "script": "wireshark",
-        "problemMatcher": [],
-        "presentation": {
-            "reveal": "never",
-            "panel": "dedicated"
-        }
     }
 ]
 }
