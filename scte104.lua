@@ -172,7 +172,9 @@ function scte104_proto.dissector(buffer, pinfo, tree)
 
         -- fields based on message type:
         if (opID == 0x0003 or opID == 0x0004) then -- alive_request_data() or alive_response_data()
-            Parse_time(buffer, 13, t)
+            if buffer:len() > 13 then -- time() structure present
+                Parse_time(buffer, 13, t)
+            end
         elseif (opID == 0x0007) then               -- inject_response_data()
             if buffer:len() >= 14 then
                 t:add(scte104_proto, buffer(13, 1), "inject_response_data():")
