@@ -1,0 +1,30 @@
+    1   0.000000 10.101.18.96 → 10.101.17.103 SCTE104 84 MOP
+Frame 1: Packet, 84 bytes on wire (672 bits), 84 bytes captured (672 bits)
+Ethernet II, Src: Dell_eb:d7:90 (f0:d4:e2:eb:d7:90), Dst: Dell_74:67:ae (4c:d9:8f:74:67:ae)
+Internet Protocol Version 4, Src: 10.101.18.96, Dst: 10.101.17.103
+Transmission Control Protocol, Src Port: 32948, Dst Port: 5167, Seq: 1, Ack: 1, Len: 30
+SCTE-104 Multiple Operation Message
+    opID: Multiple Operation Message (0xffff)
+    messageSize: 30
+    protocol_version: 0
+    AS_index: 0 (0x00)
+    message_number: 176
+    DPI_PID_index: 0xfa0 (4000)
+    SCTE35_protocol_version: 0
+    timestamp(): No timestamp
+        time_type: None (0)
+    num_ops: 1
+    Operation 1: splice_request_data() 0x0101: spliceStart_normal
+        opID: splice_request_data() (0x0101)
+        data_length: 14
+        data(): 010000000100001f400258000000
+        splice_insert_type: spliceStart_normal (1)
+        splice_event_id: 1 (0x00000001)
+        unique_program_id: 0 (0x0000)
+        pre_roll_time: 8 seconds
+        break_duration: 1 minute
+        avail_num: 0
+        avails_expected: 0
+        auto_return_flag: False
+        not_an_entry_flag: 0 (not present)
+

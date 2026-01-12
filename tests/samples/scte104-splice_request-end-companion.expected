@@ -1,0 +1,30 @@
+    1   0.000000    127.0.0.1 → 127.0.0.1    SCTE104 74 MOP
+Frame 1: Packet, 74 bytes on wire (592 bits), 74 bytes captured (592 bits)
+Null/Loopback
+Internet Protocol Version 4, Src: 127.0.0.1, Dst: 127.0.0.1
+Transmission Control Protocol, Src Port: 53206, Dst Port: 5167, Seq: 1, Ack: 1, Len: 30
+SCTE-104 Multiple Operation Message
+    opID: Multiple Operation Message (0xffff)
+    messageSize: 30
+    protocol_version: 0
+    AS_index: 0 (0x00)
+    message_number: 3
+    DPI_PID_index: 0x00 (0)
+    SCTE35_protocol_version: 0
+    timestamp(): No timestamp
+        time_type: None (0)
+    num_ops: 1
+    Operation 1: splice_request_data() 0x0101: spliceEnd_normal
+        opID: splice_request_data() (0x0101)
+        data_length: 14
+        data(): 030000303902a60fa00000060700
+        splice_insert_type: spliceEnd_normal (3)
+        splice_event_id: 12345 (0x00003039)
+        unique_program_id: 678 (0x02a6)
+        pre_roll_time: 4 seconds
+        break_duration: 0.000000000 seconds
+        avail_num: 6
+        avails_expected: 7
+        auto_return_flag: False
+        not_an_entry_flag: 0 (not present)
+
