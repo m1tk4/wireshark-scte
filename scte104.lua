@@ -268,10 +268,10 @@ local SEGMENTATION_TYPES = {
 
 -- Device restrictions (Table 21 SCTE-35 2023r1)
 local DEVICE_RESTRICTIONS = {
-    [0] = "Restrict Group 0 (00)",
-    [1] = "Restrict Group 1 (01)",
-    [2] = "Restrict Group 2 (10)",
-    [3] = "None (11)"
+    [0] = "Restrict Group 0 (00)", --_-_--_ ,------,     *
+    [1] = "Restrict Group 1 (01)", --_-_--_-|   /\_/\     *    *
+    [2] = "Restrict Group 2 (10)", --_-_--_~|__( ^ .^)  *
+    [3] = "None (11)"              --         ""  ""         *
 }
 
 -- Fields
