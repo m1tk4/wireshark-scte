@@ -1,0 +1,42 @@
+    1   0.000000    127.0.0.1 → 127.0.0.1    SCTE104 101 MOP
+Frame 1: Packet, 101 bytes on wire (808 bits), 101 bytes captured (808 bits)
+Null/Loopback
+Internet Protocol Version 4, Src: 127.0.0.1, Dst: 127.0.0.1
+Transmission Control Protocol, Src Port: 54428, Dst Port: 5167, Seq: 1, Ack: 1, Len: 57
+SCTE-104 Multiple Operation Message
+    opID: Multiple Operation Message (0xffff)
+    messageSize: 57
+    protocol_version: 0
+    AS_index: 0 (0x00)
+    message_number: 209
+    DPI_PID_index: 0x00 (0)
+    SCTE35_protocol_version: 0
+    timestamp(): No timestamp
+        time_type: None (0)
+    num_ops: 2
+    Operation 1: time_signal_request_data() 0x0104: 1500 ms
+        opID: time_signal_request_data() (0x0104)
+        data_length: 2
+        data(): 05dc
+        pre_roll_time: 1.500000000 seconds
+    Operation 2: insert_segmentation_descriptor_request_data() 0x010b: Chapter Start (0x20)
+        opID: insert_segmentation_descriptor_request_data() (0x010b)
+        data_length: 35
+        data(): 0000000100001e0111534f4d455754465550494449534845524520010a0f0101010101
+        segmentation_event_id: 1 (0x00000001)
+        segmentation_event_cancel_indicator: False
+        duration: 30 seconds
+        segmentation_upid_type: User Defined (0x01)
+        segmentation_upid_length: 17
+        segmentation_upid: 534f4d4557544655504944495348455245
+        segmentation_upid (ASCII): SOMEWTFUPIDISHERE
+        segmentation_type_id: Chapter Start (0x20)
+        segment_num: 1
+        segments_expected: 10
+        duration_extension_frames: 15
+        delivery_not_restricted_flag: True
+        web_delivery_allowed_flag: True
+        no_regional_blackout_flag: True
+        archive_allowed_flag: True
+        device_restrictions: Restrict Group 1 (01) (1)
+

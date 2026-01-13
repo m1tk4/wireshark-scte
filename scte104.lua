@@ -123,6 +123,110 @@ local SPLICE_INSERT_TYPES = {
     [5] = "splice_cancel",
 }
 
+-- Segmentation UPID Types (Table 22 SCTE-35 2023r1)
+local SEGMENTATION_UPID_TYPES = {
+    [0x00] = "Not Used",
+    [0x01] = "User Defined",
+    [0x02] = "ISCI",
+    [0x03] = "Ad-ID",
+    [0x04] = "UMID",
+    [0x05] = "ISAN (Deprecated)",
+    [0x06] = "ISAN",
+    [0x07] = "TID",
+    [0x08] = "TI",
+    [0x09] = "ADI",
+    [0x0A] = "EIDR",
+    [0x0B] = "ATSC Content Identifier",
+    [0x0C] = "MPU()",
+    [0x0D] = "MID()",
+    [0x0E] = "ADS Information",
+    [0x0F] = "URI",
+    [0x10] = "UUID",
+    [0x11] = "SCR"
+}
+
+-- Segmentation UPID expected lengths (Table 22 SCTE-35 2023r1)
+local SEGMENTATION_UPID_LENGTHS = {
+    [0x00] = 0,
+    -- [0x01] -- variable length
+    [0x02] = 8,
+    [0x03] = 12,
+    [0x04] = 32,
+    [0x05] = 8,
+    [0x06] = 12,
+    [0x07] = 12,
+    [0x08] = 8,
+    -- [0x09] -- variable length
+    [0x0A] = 12,
+    -- [0x0B] -- variable length
+    -- [0x0C] -- variable length
+    -- [0x0D] -- variable length
+    -- [0x0E] -- variable length
+    -- [0x0F] -- variable length
+    [0x10] = 16,
+    -- [0x11] -- variable length
+}
+
+-- Segmentation Types (Table 23 SCTE-35 2023r1)
+local SEGMENTATION_TYPES = {
+    [0x00] = "Not Indicated",
+    [0x01] = "Content Identification",
+    [0x02] = "Private",
+    [0x10] = "Program Start",
+    [0x11] = "Program End",
+    [0x12] = "Program Early Termination",
+    [0x13] = "Program Breakaway",
+    [0x14] = "Program Resumption",
+    [0x15] = "Program Runover Planned",
+    [0x16] = "Program Runover Unplanned",
+    [0x17] = "Program Overlap Start",
+    [0x18] = "Program Blackout Override",
+    [0x19] = "Program Join",
+    [0x1A] = "Program Immediate Resumption",
+    [0x20] = "Chapter Start",
+    [0x21] = "Chapter End",
+    [0x22] = "Break Start",
+    [0x23] = "Break End",
+    [0x24] = "Opening Credit Start (deprecated)",
+    [0x25] = "Opening Credit End (deprecated)",
+    [0x26] = "Closing Credit Start (deprecated)",
+    [0x27] = "Closing Credit End (deprecated)",
+    [0x30] = "Provider Advertisement Start",
+    [0x31] = "Provider Advertisement End",
+    [0x32] = "Distributor Advertisement Start",
+    [0x33] = "Distributor Advertisement End",
+    [0x34] = "Provider Placement Opportunity Start",
+    [0x35] = "Provider Placement Opportunity End",
+    [0x36] = "Distributor Placement Opportunity Start",
+    [0x37] = "Distributor Placement Opportunity End",
+    [0x38] = "Provider Overlay Placement Opportunity Start",
+    [0x39] = "Provider Overlay Placement Opportunity End",
+    [0x3A] = "Distributor Overlay Placement Opportunity Start",
+    [0x3B] = "Distributor Overlay Placement Opportunity End",
+    [0x3C] = "Provider Promo Start",
+    [0x3D] = "Provider Promo End",
+    [0x3E] = "Distributor Promo Start",
+    [0x3F] = "Distributor Promo End",
+    [0x40] = "Unscheduled Event Start",
+    [0x41] = "Unscheduled Event End",
+    [0x42] = "Alternate Content Opportunity Start",
+    [0x43] = "Alternate Content Opportunity End",
+    [0x44] = "Provider Ad Block Start",
+    [0x45] = "Provider Ad Block End",
+    [0x46] = "Distributor Ad Block Start",
+    [0x47] = "Distributor Ad Block End",
+    [0x50] = "Network Start",
+    [0x51] = "Network End"
+}
+
+-- Device restrictions (Table 21 SCTE-35 2023r1)
+local DEVICE_RESTRICTIONS = {
+    [0] = "Restrict Group 0 (00)",
+    [1] = "Restrict Group 1 (01)",
+    [2] = "Restrict Group 2 (10)",
+    [3] = "None (11)"
+}
+
 -- Fields
 local f = {
     opID                       = ProtoField.uint16("scte104.opID", "opID", base.HEX_DEC, OPID_SINGLE_OP),
@@ -161,6 +265,26 @@ local f = {
     avails_expected            = ProtoField.uint8("scte104.avails_expected", "avails_expected", base.DEC),
     auto_return_flag           = ProtoField.bool("scte104.auto_return_flag", "auto_return_flag"),
     not_an_entry_flag          = ProtoField.bool("scte104.not_an_entry_flag", "not_an_entry_flag"),
+    segmentation_event_id      = ProtoField.uint32("scte104.segmentation_event_id", "segmentation_event_id", base.DEC_HEX),
+    segmentation_event_cancel_indicator =
+        ProtoField.bool("scte104.segmentation_event_cancel_indicator", "segmentation_event_cancel_indicator"),
+    duration                   = ProtoField.relative_time("scte104.duration", "duration"),
+    segmentation_upid_type     = ProtoField.uint8("scte104.segmentation_upid_type", "segmentation_upid_type", base.HEX_DEC, SEGMENTATION_UPID_TYPES),
+    segmentation_upid_length   = ProtoField.uint8("scte104.segmentation_upid_length", "segmentation_upid_length", base.DEC),
+    segmentation_upid          = ProtoField.bytes("scte104.segmentation_upid", "segmentation_upid"),
+    segmentation_upid_ascii    = ProtoField.string("scte104.segmentation_upid_ascii", "segmentation_upid (ASCII)", base.ASCII),
+    segmentation_type_id       = ProtoField.uint8("scte104.segmentation_type_id", "segmentation_type_id", base.HEX_DEC, SEGMENTATION_TYPES),
+    segment_num                = ProtoField.uint8("scte104.segment_num", "segment_num", base.DEC),
+    segments_expected         = ProtoField.uint8("scte104.segments_expected", "segments_expected", base.DEC),
+    duration_extension_frames  = ProtoField.uint8("scte104.duration_extension_frames", "duration_extension_frames", base.DEC),
+    delivery_not_restricted_flag  = ProtoField.bool("scte104.delivery_not_restricted_flag", "delivery_not_restricted_flag"),
+    web_delivery_allowed_flag     = ProtoField.bool("scte104.web_delivery_allowed_flag", "web_delivery_allowed_flag"),
+    no_regional_blackout_flag     = ProtoField.bool("scte104.no_regional_blackout_flag", "no_regional_blackout_flag"),
+    archive_allowed_flag          = ProtoField.bool("scte104.archive_allowed_flag", "archive_allowed_flag"),
+    device_restrictions           = ProtoField.uint8("scte104.device_restrictions", "device_restrictions", base.DEC, DEVICE_RESTRICTIONS),
+    insert_sub_segment_info       = ProtoField.bool("scte104.insert_sub_segment_info", "insert_sub_segment_info"),
+    sub_segment_num            = ProtoField.uint8("scte104.sub_segment_num", "sub_segment_num", base.DEC),
+    sub_segments_expected      = ProtoField.uint8("scte104.sub_segments_expected", "sub_segments_expected", base.DEC)
 }
 scte104_proto.fields = f
 
@@ -330,9 +454,69 @@ function Parse_operation(buffer, offset, tree, opNumber)
                 (pre_roll % 1000) * 1000000) -- nanoseconds
             )
         end
+    elseif m_opID == 0x010b then ------------------------------------------------- insert_segmentation_descriptor_request_data()
+        if data_length < 18 then
+            t:add_proto_expert_info(e.msg_wrong_length, "not enough data for insert_segmentation_descriptor_request_data()")
+            return -1
+        else 
+            t:add(f.segmentation_event_id, buffer(data_offset, 4))
+            t:add(f.segmentation_event_cancel_indicator, buffer(data_offset + 4, 1))
+            local duration = buffer(data_offset + 5, 2):uint()
+            t:add(f.duration, buffer(data_offset + 5, 2), NSTime.new( duration, 0 ))
+            local upid_type = buffer(data_offset + 7, 1):uint()
+            t:add(f.segmentation_upid_type, buffer(data_offset + 7, 1))
+            local upid_length = buffer(data_offset + 8, 1):uint()
+            t:add(f.segmentation_upid_length, buffer(data_offset + 8, 1))
+            -- check UPD length vs. expected for fixed length types
+            if SEGMENTATION_UPID_LENGTHS[upid_type] ~= nil then
+                local expected_length = SEGMENTATION_UPID_LENGTHS[upid_type]
+                if expected_length ~= 0 and expected_length ~= upid_length then
+                    t:add_proto_expert_info(e.out_of_range,
+                        string.format("segmentation_upid_length does not match expected length for type 0x%02X", upid_type))
+                end
+            end
+            -- check that UPD length fits in data_length
+            if ((upid_length+18) > data_length) then
+                t:add_proto_expert_info(e.msg_wrong_length,
+                    "segmentation_upid_length exceeds available data length")
+                return -1
+            end
+            t:add(f.segmentation_upid, buffer(data_offset+9, upid_length))
+            -- if UPID only contains ASCII characters, add ASCII representation
+            local is_ascii_printable = true
+            for i = 0, upid_length - 1 do
+                local byte = buffer(data_offset+9+i, 1):uint()
+                if byte < 32 or byte > 126 then
+                    is_ascii_printable = false
+                    break
+                end
+            end
+            if is_ascii_printable then
+                t:add(f.segmentation_upid_ascii, buffer(data_offset+9, upid_length))
+            end
+            t:add(f.segmentation_type_id, buffer(data_offset + 9 + upid_length, 1))
+            t:append_text(string.format(": %s (0x%02X)",
+                SEGMENTATION_TYPES[buffer(data_offset + 9 + upid_length, 1):uint()] or "Unknown",
+                buffer(data_offset + 9 + upid_length, 1):uint()))
+            t:add(f.segment_num, buffer(data_offset + 10 + upid_length, 1))
+            t:add(f.segments_expected, buffer(data_offset + 11 + upid_length, 1))
+            t:add(f.duration_extension_frames, buffer(data_offset + 12 + upid_length, 1))
+            t:add(f.delivery_not_restricted_flag, buffer(data_offset + 13 + upid_length, 1))
+            t:add(f.web_delivery_allowed_flag, buffer(data_offset + 14 + upid_length, 1))
+            t:add(f.no_regional_blackout_flag, buffer(data_offset + 15 + upid_length, 1))
+            t:add(f.archive_allowed_flag, buffer(data_offset + 16 + upid_length, 1))
+            t:add(f.device_restrictions, buffer(data_offset + 17 + upid_length, 1))
+            -- check if it's a long form of segmentation descriptor
+            if data_length > (18 + upid_length) then
+                t:add(f.insert_sub_segment_info, buffer(data_offset + 18 + upid_length, 1))
+                local sub_segment_info_flag = buffer(data_offset + 18 + upid_length, 1):uint()
+                if sub_segment_info_flag and data_length >= (20 + upid_length) then
+                    t:add(f.sub_segment_num, buffer(data_offset + 19 + upid_length, 1))
+                    t:add(f.sub_segments_expected, buffer(data_offset + 20 + upid_length, 1))
+                end
+            end
+        end
     end
-
-    -- further dissection of sub-operations can be added here
     return offset + 4 + data_length
 end
 
