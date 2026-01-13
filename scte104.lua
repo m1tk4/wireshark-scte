@@ -98,19 +98,19 @@ local OPID_MULTI_OP_SHORT = {
     [0x0106] = "component_mode_DPI",
     [0x0107] = "encrypted_DPI",
     [0x0108] = "descriptor",
-    [0x0109] = "DTMF",
+    [0x0109] = "DTMF_descr",
     [0x010A] = "avail",
-    [0x010B] = "segmentation",
-    [0x010C] = "proprietary_command",
+    [0x010B] = "segment_descr",
+    [0x010C] = "proprietary_cmd",
     [0x010D] = "schedule_component_mode",
     [0x010E] = "schedule_definition",
-    [0x010F] = "tier",
-    [0x0110] = "time",
-    [0x0111] = "audio",
+    [0x010F] = "tier_descr",
+    [0x0110] = "time_descr",
+    [0x0111] = "audio_descr",
     [0x0112] = "audio_provisioning",
     [0x0113] = "alternate_break_duration",
-    [0x0300] = "delete_ControlWord",
-    [0x0301] = "update_ControlWord"
+    [0x0300] = "delete_cw",
+    [0x0301] = "update_cw"
 }
 
 
