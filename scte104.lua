@@ -34,11 +34,11 @@ local OPID_SINGLE_OP = {
     [0x000A] = "config_response_data()",
     [0x000B] = "provisioning_request_data()",
     [0x000C] = "provisioning_response_data()",
-    [0x000F] = "fault_request_data()",               --   ЦЫП!
-    [0x0010] = "fault_response_data()",              --    __
-    [0x0011] = "AS_alive_request_data()",            --  <(o )___
-    [0x0012] = "AS_alive_response_data()",           --   ( ._> /
-    [0xFFFF] = "Multiple Operation Message"          --    `---'
+    [0x000F] = "fault_request_data()",      --   ЦЫП!
+    [0x0010] = "fault_response_data()",     --    __
+    [0x0011] = "AS_alive_request_data()",   --  <(o )___
+    [0x0012] = "AS_alive_response_data()",  --   ( ._> /
+    [0xFFFF] = "Multiple Operation Message" --    `---'
 }
 
 -- opID Assigned Values for multiple_operation_message (Table 8-4)
@@ -125,41 +125,42 @@ local SPLICE_INSERT_TYPES = {
 
 -- Fields
 local f = {
-    opID                    = ProtoField.uint16("scte104.opID", "opID", base.HEX_DEC, OPID_SINGLE_OP),
-    messageSize             = ProtoField.uint16("scte104.messageSize", "messageSize", base.DEC),
-    result                  = ProtoField.uint8("scte104.result", "result", base.DEC_HEX, RESULT_CODES),
-    result_extension        = ProtoField.uint8("scte104.result_extension", "result_extension", base.DEC_HEX),
-    protocol_version        = ProtoField.uint8("scte104.protocol_version", "protocol_version", base.DEC),
-    AS_index                = ProtoField.uint8("scte104.AS_index", "AS_index", base.DEC_HEX),
-    message_number          = ProtoField.uint8("scte104.message_number", "message_number", base.DEC),
-    DPI_PID_index           = ProtoField.uint8("scte104.DPI_PID_index", "DPI_PID_index", base.HEX_DEC),
-    SCTE35_protocol_version = ProtoField.uint8("scte104.SCTE35_protocol_version", "SCTE35_protocol_version", base.DEC),
-    timestamp_time_type     = ProtoField.uint8("scte104.timestamp.time_type", "time_type", base.DEC, TIME_TYPES),
-    timestamp_UTC_seconds   = ProtoField.uint32("scte104.timestamp.UTC_seconds", "UTC_seconds", base.DEC),
+    opID                       = ProtoField.uint16("scte104.opID", "opID", base.HEX_DEC, OPID_SINGLE_OP),
+    messageSize                = ProtoField.uint16("scte104.messageSize", "messageSize", base.DEC),
+    result                     = ProtoField.uint8("scte104.result", "result", base.DEC_HEX, RESULT_CODES),
+    result_extension           = ProtoField.uint8("scte104.result_extension", "result_extension", base.DEC_HEX),
+    protocol_version           = ProtoField.uint8("scte104.protocol_version", "protocol_version", base.DEC),
+    AS_index                   = ProtoField.uint8("scte104.AS_index", "AS_index", base.DEC_HEX),
+    message_number             = ProtoField.uint8("scte104.message_number", "message_number", base.DEC),
+    DPI_PID_index              = ProtoField.uint8("scte104.DPI_PID_index", "DPI_PID_index", base.HEX_DEC),
+    SCTE35_protocol_version    = ProtoField.uint8("scte104.SCTE35_protocol_version", "SCTE35_protocol_version", base.DEC),
+    timestamp_time_type        = ProtoField.uint8("scte104.timestamp.time_type", "time_type", base.DEC, TIME_TYPES),
+    timestamp_UTC_seconds      = ProtoField.uint32("scte104.timestamp.UTC_seconds", "UTC_seconds", base.DEC),
     timestamp_UTC_microseconds = ProtoField.uint16("scte104.timestamp.UTC_microseconds", "UTC_microseconds", base.DEC),
-    timestamp_VITC_hours    = ProtoField.uint8("scte104.timestamp.VITC_hours", "VITC_hours", base.DEC),
-    timestamp_VITC_minutes  = ProtoField.uint8("scte104.timestamp.VITC_minutes", "VITC_minutes", base.DEC),
-    timestamp_VITC_seconds  = ProtoField.uint8("scte104.timestamp.VITC_seconds", "VITC_seconds", base.DEC),
-    timestamp_VITC_frames   = ProtoField.uint8("scte104.timestamp.VITC_frames", "VITC_frames", base.DEC),
-    timestamp_GPI_number    = ProtoField.uint8("scte104.timestamp.GPI_number", "GPI_number", base.DEC),
-    timestamp_GPI_edge      = ProtoField.uint8("scte104.timestamp.GPI_edge", "GPI_edge", base.DEC),
-    num_ops                 = ProtoField.uint8("scte104.num_ops", "num_ops", base.DEC),
-    sop_time                = ProtoField.absolute_time("scte104.time", "time()", base.UTC),
-    sop_time_seconds        = ProtoField.uint32("scte104.time_seconds", "seconds", base.DEC),
-    sop_time_microseconds   = ProtoField.uint32("scte104.time_microseconds", "microseconds", base.DEC),
-    cue_message_count       = ProtoField.uint8("scte104.cue_message_count", "cue_message_count", base.DEC),
-    mopID                   = ProtoField.uint16("scte104.opID", "opID", base.HEX_DEC, OPID_MULTI_OP),
-    data_length             = ProtoField.uint16("scte104.data_length", "data_length", base.DEC),
-    opData                  = ProtoField.bytes("scte104.opData", "data()"),
-    splice_insert_type      = ProtoField.uint8("scte104.splice_insert_type", "splice_insert_type", base.DEC, SPLICE_INSERT_TYPES),
-    splice_event_id         = ProtoField.uint32("scte104.splice_event_id", "splice_event_id", base.DEC_HEX),
-    unique_program_id       = ProtoField.uint16("scte104.unique_program_id", "unique_program_id", base.DEC_HEX),
-    pre_roll_time           = ProtoField.relative_time("scte104.pre_roll_time", "pre_roll_time"),
-    break_duration          = ProtoField.relative_time("scte104.break_duration", "break_duration"),
-    avail_num               = ProtoField.uint8("scte104.avail_num", "avail_num", base.DEC),
-    avails_expected         = ProtoField.uint8("scte104.avails_expected", "avails_expected", base.DEC),
-    auto_return_flag        = ProtoField.bool("scte104.auto_return_flag", "auto_return_flag"),
-    not_an_entry_flag       = ProtoField.bool("scte104.not_an_entry_flag", "not_an_entry_flag"),
+    timestamp_VITC_hours       = ProtoField.uint8("scte104.timestamp.VITC_hours", "VITC_hours", base.DEC),
+    timestamp_VITC_minutes     = ProtoField.uint8("scte104.timestamp.VITC_minutes", "VITC_minutes", base.DEC),
+    timestamp_VITC_seconds     = ProtoField.uint8("scte104.timestamp.VITC_seconds", "VITC_seconds", base.DEC),
+    timestamp_VITC_frames      = ProtoField.uint8("scte104.timestamp.VITC_frames", "VITC_frames", base.DEC),
+    timestamp_GPI_number       = ProtoField.uint8("scte104.timestamp.GPI_number", "GPI_number", base.DEC),
+    timestamp_GPI_edge         = ProtoField.uint8("scte104.timestamp.GPI_edge", "GPI_edge", base.DEC),
+    num_ops                    = ProtoField.uint8("scte104.num_ops", "num_ops", base.DEC),
+    sop_time                   = ProtoField.absolute_time("scte104.time", "time()", base.UTC),
+    sop_time_seconds           = ProtoField.uint32("scte104.time_seconds", "seconds", base.DEC),
+    sop_time_microseconds      = ProtoField.uint32("scte104.time_microseconds", "microseconds", base.DEC),
+    cue_message_count          = ProtoField.uint8("scte104.cue_message_count", "cue_message_count", base.DEC),
+    mopID                      = ProtoField.uint16("scte104.opID", "opID", base.HEX_DEC, OPID_MULTI_OP),
+    data_length                = ProtoField.uint16("scte104.data_length", "data_length", base.DEC),
+    opData                     = ProtoField.bytes("scte104.opData", "data()"),
+    splice_insert_type         = ProtoField.uint8("scte104.splice_insert_type", "splice_insert_type", base.DEC,
+        SPLICE_INSERT_TYPES),
+    splice_event_id            = ProtoField.uint32("scte104.splice_event_id", "splice_event_id", base.DEC_HEX),
+    unique_program_id          = ProtoField.uint16("scte104.unique_program_id", "unique_program_id", base.DEC_HEX),
+    pre_roll_time              = ProtoField.relative_time("scte104.pre_roll_time", "pre_roll_time"),
+    break_duration             = ProtoField.relative_time("scte104.break_duration", "break_duration"),
+    avail_num                  = ProtoField.uint8("scte104.avail_num", "avail_num", base.DEC),
+    avails_expected            = ProtoField.uint8("scte104.avails_expected", "avails_expected", base.DEC),
+    auto_return_flag           = ProtoField.bool("scte104.auto_return_flag", "auto_return_flag"),
+    not_an_entry_flag          = ProtoField.bool("scte104.not_an_entry_flag", "not_an_entry_flag"),
 }
 scte104_proto.fields = f
 
@@ -172,9 +173,9 @@ local e = {
         expert.severity.ERROR
     ),
     out_of_range = ProtoExpert.new(
-        "scte104.out_of_range",            -- (\___/)
-        "Field value out of range",        -- (='.'=)
-        expert.group.MALFORMED,            -- (")_(")
+        "scte104.out_of_range",     -- (\___/)
+        "Field value out of range", -- (='.'=)
+        expert.group.MALFORMED,     -- (")_(")
         expert.severity.WARN
     )
 }
@@ -219,10 +220,10 @@ function scte104_proto.dissector(buffer, pinfo, tree)
 
         -- fields based on message type:
         if (opID == 0x0003 or opID == 0x0004) then -- alive_request_data() or alive_response_data()
-            if buffer:len() > 13 then -- time() structure present
+            if buffer:len() > 13 then              -- time() structure present
                 Parse_time(buffer, 13, t)
             end
-        elseif (opID == 0x0007) then               -- inject_response_data()
+        elseif (opID == 0x0007) then -- inject_response_data()
             if buffer:len() >= 14 then
                 t:add(scte104_proto, buffer(13, 1), "inject_response_data():")
                     :add(f.message_number, buffer(13, 1))
@@ -252,7 +253,7 @@ function scte104_proto.dissector(buffer, pinfo, tree)
         t:add(f.num_ops, buffer(pos, 1))
         pos = pos + 1
         local opNumber = 1
-        while pos < messageSize and pos>0 do
+        while pos < messageSize and pos > 0 do
             pos = Parse_operation(buffer, pos, t, opNumber)
             opNumber = opNumber + 1
         end
@@ -274,14 +275,14 @@ end
 ---@param opNumber number
 ---@return number
 function Parse_operation(buffer, offset, tree, opNumber)
-    if buffer:len() < offset+4 then
+    if buffer:len() < offset + 4 then
         tree:add_proto_expert_info(e.msg_wrong_length, "not enough data for operation structure")
         return -1
     end
     local m_opID = buffer(offset, 2):uint()
     local data_length = buffer(offset + 2, 2):uint()
-    local t = tree:add(scte104_proto, 
-        buffer(offset, math.min(buffer:len()-offset,4+data_length)),
+    local t = tree:add(scte104_proto,
+        buffer(offset, math.min(buffer:len() - offset, 4 + data_length)),
         string.format("Operation %d: %s 0x%04x", opNumber, OPID_MULTI_OP[m_opID] or "Unknown", m_opID)
     )
     t:add(f.mopID, buffer(offset, 2))
@@ -292,38 +293,48 @@ function Parse_operation(buffer, offset, tree, opNumber)
 
     -- parse the data based on type
     local data_offset = offset + 4
-    if m_opID == 0x0101 then -- splice_request_data()
+    if m_opID == 0x0101 then ------------------------------------------------------------------------ splice_request_data()
         if data_length < 14 then
             t:add_proto_expert_info(e.msg_wrong_length, "not enough data for splice_request_data()")
             return -1
         end
-        t:add(f.splice_insert_type, buffer(data_offset,1))
-        t:append_text(string.format(": %s", SPLICE_INSERT_TYPES[buffer(data_offset,1):uint()] or "unknown"))
-        t:add(f.splice_event_id, buffer(data_offset + 1,4))
-        t:add(f.unique_program_id, buffer(data_offset + 5,2))
-        t:add(f.pre_roll_time, buffer(data_offset + 7,2),NSTime.new(
-            math.floor(buffer(data_offset + 7,2):uint()/1000), -- seconds
-            (buffer(data_offset + 7,2):uint()%1000)*1000000)   -- nanoseconds
+        t:add(f.splice_insert_type, buffer(data_offset, 1))
+        t:append_text(string.format(": %s", SPLICE_INSERT_TYPES[buffer(data_offset, 1):uint()] or "unknown"))
+        t:add(f.splice_event_id, buffer(data_offset + 1, 4))
+        t:add(f.unique_program_id, buffer(data_offset + 5, 2))
+        t:add(f.pre_roll_time, buffer(data_offset + 7, 2), NSTime.new(
+            math.floor(buffer(data_offset + 7, 2):uint() / 1000), -- seconds
+            (buffer(data_offset + 7, 2):uint() % 1000) * 1000000) -- nanoseconds
         )
-        t:add(f.break_duration, buffer(data_offset + 9,2),NSTime.new(
-            math.floor(buffer(data_offset + 9,2):uint()/10),   -- seconds
-            (buffer(data_offset + 9,2):uint()%10)*100000000)   -- nanoseconds
+        t:add(f.break_duration, buffer(data_offset + 9, 2), NSTime.new(
+            math.floor(buffer(data_offset + 9, 2):uint() / 10), -- seconds
+            (buffer(data_offset + 9, 2):uint() % 10) * 100000000) -- nanoseconds
         )
-        t:add(f.avail_num, buffer(data_offset + 11,1))
-        t:add(f.avails_expected, buffer(data_offset + 12,1))
-        t:add(f.auto_return_flag, buffer(data_offset + 13,1))
+        t:add(f.avail_num, buffer(data_offset + 11, 1))
+        t:add(f.avails_expected, buffer(data_offset + 12, 1))
+        t:add(f.auto_return_flag, buffer(data_offset + 13, 1))
         if buffer:len() >= data_offset + 15 then
-            t:add(f.not_an_entry_flag, buffer(data_offset + 14,1)) -- this field is optional
+            t:add(f.not_an_entry_flag, buffer(data_offset + 14, 1)) -- this field is optional
         else
-            t:add("not_an_entry_flag: 0 (not present)") -- default to 0 if not present
+            t:add("not_an_entry_flag: 0 (not present)")            -- default to 0 if not present
+        end
+    elseif m_opID == 0x0104 then --------------------------------------------------------------- time_signal_request_data()
+        if data_length ~= 2 then
+            t:add_proto_expert_info(e.msg_wrong_length, "wrong data_length for time_signal_request_data()")
+            return -1
+        else
+            local pre_roll = buffer(data_offset, 2):uint()
+            t:append_text(string.format(": %d ms", pre_roll))
+            t:add(f.pre_roll_time, buffer(data_offset, 2), NSTime.new(
+                math.floor(pre_roll / 1000), -- seconds
+                (pre_roll % 1000) * 1000000) -- nanoseconds
+            )
         end
     end
 
     -- further dissection of sub-operations can be added here
     return offset + 4 + data_length
 end
-
-
 
 ---parses out timestamp() structure defined in 12.4
 ---returns the new offset after parsing time structure
@@ -407,6 +418,3 @@ local tcp_port = DissectorTable.get("tcp.port")
 if tcp_port then
     tcp_port:add(5167, scte104_proto)
 end
-
-
-
