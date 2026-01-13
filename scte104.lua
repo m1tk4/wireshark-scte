@@ -333,7 +333,8 @@ local f = {
     device_restrictions           = ProtoField.uint8("scte104.device_restrictions", "device_restrictions", base.DEC, DEVICE_RESTRICTIONS),
     insert_sub_segment_info       = ProtoField.bool("scte104.insert_sub_segment_info", "insert_sub_segment_info"),
     sub_segment_num            = ProtoField.uint8("scte104.sub_segment_num", "sub_segment_num", base.DEC),
-    sub_segments_expected      = ProtoField.uint8("scte104.sub_segments_expected", "sub_segments_expected", base.DEC)
+    sub_segments_expected      = ProtoField.uint8("scte104.sub_segments_expected", "sub_segments_expected", base.DEC),
+    tier_data                  = ProtoField.uint16("scte104.tier_data", "tier_data", base.HEX_DEC, nil, 0x0FFF)
 }
 scte104_proto.fields = f
 
@@ -575,6 +576,14 @@ function Parse_operation(buffer, offset, tree, opNumber)
                     t:add(f.sub_segments_expected, buffer(data_offset + 20 + upid_length, 1))
                 end
             end
+        end
+    elseif m_opID == 0x010f then ------------------------------------------------- insert_tier_data()
+        if data_length < 2 then
+            t:add_proto_expert_info(e.msg_wrong_length, "not enough data for insert_tier_data()")
+            return -1,""
+        else 
+            t:add(f.tier_data, buffer(data_offset, 2))
+            t:append_text(string.format(": 0x%04X (%d)", buffer(data_offset, 2):uint(),buffer(data_offset, 2):uint()))
         end
     end
     return offset + 4 + data_length, OPID_MULTI_OP_SHORT[m_opID] or "unknown"
