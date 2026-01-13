@@ -42,49 +42,49 @@ local OPID_SINGLE_OP = {
 }
 
 -- opID Assigned Values for single_operation_message, short names (Table 8-1)
-local OPID_SINGLE_OP_SHORT = {
-    [0x0000] = "general_resp",
-    [0x0001] = "init_req",
-    [0x0002] = "init_resp",
-    [0x0003] = "alive_req",
-    [0x0004] = "alive_resp",
-    [0x0007] = "inject_resp",
-    [0x0008] = "inject_complete_resp",
-    [0x0009] = "config_req",
-    [0x000A] = "config_resp",
-    [0x000B] = "provisioning_req",
-    [0x000C] = "provisioning_resp",
-    [0x000F] = "fault_req",
-    [0x0010] = "fault_resp",
-    [0x0011] = "AS_alive_req",
-    [0x0012] = "AS_alive_resp",
-    [0xFFFF] = "Multiple Operation Message"
+local OPID_SINGLE_OP_SHORT = {                                      -- SIMPLE PROFILE:
+    [0x0000] = "general_resp",                                      -- X
+    [0x0001] = "init_req",                                          -- X
+    [0x0002] = "init_resp",                                         -- X
+    [0x0003] = "alive_req",                                         -- X    
+    [0x0004] = "alive_resp",                                        -- X
+    [0x0007] = "inject_resp",                                       -- X
+    [0x0008] = "inject_complete_resp",                              -- X
+    [0x0009] = "config_req",                                        --
+    [0x000A] = "config_resp",                                       --
+    [0x000B] = "provisioning_req",                                  --
+    [0x000C] = "provisioning_resp",                                 --
+    [0x000F] = "fault_req",                                         --
+    [0x0010] = "fault_resp",                                        --
+    [0x0011] = "AS_alive_req",                                      --
+    [0x0012] = "AS_alive_resp",                                     --
+    [0xFFFF] = "Multiple Operation Message"                         --
 }
 
 -- opID Assigned Values for multiple_operation_message (Table 8-4)
-local OPID_MULTI_OP = {
-    [0x0100] = "inject_section_data_request()",
-    [0x0101] = "splice_request_data()",
-    [0x0102] = "splice_null_request_data()",
-    [0x0103] = "start_schedule_download_request_data()",
-    [0x0104] = "time_signal_request_data()",
-    [0x0105] = "transmit_schedule_request_data()",
-    [0x0106] = "component_mode_DPI_request_data()",
-    [0x0107] = "encrypted_DPI_request_data()",
-    [0x0108] = "insert_descriptor_request_data()",
-    [0x0109] = "insert_DTMF_descriptor_request_data()",
-    [0x010A] = "insert_avail_descriptor_request_data()",
-    [0x010B] = "insert_segmentation_descriptor_request_data()",
-    [0x010C] = "proprietary_command_request_data()",
-    [0x010D] = "schedule_component_mode_request_data()",
-    [0x010E] = "schedule_definition_data()",
-    [0x010F] = "insert_tier_data()",
-    [0x0110] = "insert_time_descriptor()",
-    [0x0111] = "insert_audio_descriptor()",
-    [0x0112] = "insert_audio_provisioning()",
-    [0x0113] = "insert_alternate_break_duration()",
-    [0x0300] = "delete_ControlWord_data()",
-    [0x0301] = "update_ControlWord_data()"
+local OPID_MULTI_OP = {                                             -- SIMPLE PROFILE:
+    [0x0100] = "inject_section_data_request()",                     -- X
+    [0x0101] = "splice_request_data()",                             -- X
+    [0x0102] = "splice_null_request_data()",                        -- X
+    [0x0103] = "start_schedule_download_request_data()",            --
+    [0x0104] = "time_signal_request_data()",                        -- X
+    [0x0105] = "transmit_schedule_request_data()",                  --
+    [0x0106] = "component_mode_DPI_request_data()",                 -- 
+    [0x0107] = "encrypted_DPI_request_data()",                      -- 
+    [0x0108] = "insert_descriptor_request_data()",                  -- X
+    [0x0109] = "insert_DTMF_descriptor_request_data()",             -- X
+    [0x010A] = "insert_avail_descriptor_request_data()",            -- X
+    [0x010B] = "insert_segmentation_descriptor_request_data()",     -- X
+    [0x010C] = "proprietary_command_request_data()",                -- X
+    [0x010D] = "schedule_component_mode_request_data()",            --  
+    [0x010E] = "schedule_definition_data()",                        -- 
+    [0x010F] = "insert_tier_data()",                                -- X   
+    [0x0110] = "insert_time_descriptor()",                          -- X
+    [0x0111] = "insert_audio_descriptor()",                         -- X    
+    [0x0112] = "insert_audio_provisioning()",                       -- X
+    [0x0113] = "insert_alternate_break_duration()",                 -- X
+    [0x0300] = "delete_ControlWord_data()",                         --  
+    [0x0301] = "update_ControlWord_data()"                          --   
 }
 
 -- opID Assigned Values for multiple_operation_message - short names (Table 8-4)
