@@ -1,0 +1,32 @@
+    1   0.000000 192.168.1.221 → 192.168.1.33 SCTE104 98 SPLICE msgNo:59
+Frame 1: Packet, 98 bytes on wire (784 bits), 98 bytes captured (784 bits)
+Ethernet II, Src: Microsoft_01:c2:0b (00:15:5d:01:c2:0b), Dst: ASUSTekCOMPU_46:6c:35 (cc:28:aa:46:6c:35)
+Internet Protocol Version 4, Src: 192.168.1.221, Dst: 192.168.1.33
+Transmission Control Protocol, Src Port: 39204, Dst Port: 5167, Seq: 1, Ack: 1, Len: 32
+SCTE-104 Multiple Operation Message
+    opID: Multiple Operation Message (0xffff)
+    messageSize: 32
+    protocol_version: 0
+    AS_index: 1 (0x01)
+    message_number: 59
+    DPI_PID_index: 0xfa0 (4000)
+    SCTE35_protocol_version: 0
+    timestamp(): GPI #5 edge:2
+        time_type: GPI (3)
+        GPI_number: 5
+        GPI_edge: 2
+    num_ops: 1
+    Operation 1: splice_request_data() 0x0101: spliceStart_normal
+        opID: splice_request_data() (0x0101)
+        data_length: 14
+        data(): 010000000100000000025d000000
+        splice_insert_type: spliceStart_normal (1)
+        splice_event_id: 1 (0x00000001)
+        unique_program_id: 0 (0x0000)
+        pre_roll_time: 0.000000000 seconds
+        break_duration: 1 minute, 500.000000 milliseconds
+        avail_num: 0
+        avails_expected: 0
+        auto_return_flag: False
+        not_an_entry_flag: 0 (not present)
+

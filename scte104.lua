@@ -288,10 +288,12 @@ local f = {
     timestamp_time_type        = ProtoField.uint8("scte104.timestamp.time_type", "time_type", base.DEC, TIME_TYPES),
     timestamp_UTC_seconds      = ProtoField.uint32("scte104.timestamp.UTC_seconds", "UTC_seconds", base.DEC),
     timestamp_UTC_microseconds = ProtoField.uint16("scte104.timestamp.UTC_microseconds", "UTC_microseconds", base.DEC),
+    timestamp_UTC              = ProtoField.absolute_time("scte104.timestamp.UTC", "UTC", base.UTC),
     timestamp_VITC_hours       = ProtoField.uint8("scte104.timestamp.VITC_hours", "VITC_hours", base.DEC),
     timestamp_VITC_minutes     = ProtoField.uint8("scte104.timestamp.VITC_minutes", "VITC_minutes", base.DEC),
     timestamp_VITC_seconds     = ProtoField.uint8("scte104.timestamp.VITC_seconds", "VITC_seconds", base.DEC),
     timestamp_VITC_frames      = ProtoField.uint8("scte104.timestamp.VITC_frames", "VITC_frames", base.DEC),
+    timestamp_VITC             = ProtoField.string("scte104.timestamp.VITC", "VITC", base.ASCII),
     timestamp_GPI_number       = ProtoField.uint8("scte104.timestamp.GPI_number", "GPI_number", base.DEC),
     timestamp_GPI_edge         = ProtoField.uint8("scte104.timestamp.GPI_edge", "GPI_edge", base.DEC),
     num_ops                    = ProtoField.uint8("scte104.num_ops", "num_ops", base.DEC),
@@ -611,18 +613,32 @@ function Parse_timestamp(buffer, offset, tree)
         if microseconds >= 1000000 then
             subt:add_proto_expert_info(e.out_of_range, "UTC microseconds field out of range")
         end
+        subt:add(f.timestamp_UTC,buffer(offset+1,6),NSTime.new(buffer(offset + 1, 4):uint(),microseconds * 1000))
+        subt:append_text(" "..os.date("!%Y-%m-%d %H:%M:%S", buffer(offset + 1, 4):uint()) .. string.format(".%06d", microseconds))
     elseif type == 2 then -- VITC
         local subt = tree:add(scte104_proto, buffer(offset, 5), "timestamp(): VITC")
+        local vitc = string.format("%02d:%02d:%02d:%02d",
+            buffer(offset + 1, 1):uint(),
+            buffer(offset + 2, 1):uint(),
+            buffer(offset + 3, 1):uint(),
+            buffer(offset + 4, 1):uint()
+        )
         subt:add(f.timestamp_time_type, buffer(offset, 1))
         subt:add(f.timestamp_VITC_hours, buffer(offset + 1, 1))
         subt:add(f.timestamp_VITC_minutes, buffer(offset + 2, 1))
         subt:add(f.timestamp_VITC_seconds, buffer(offset + 3, 1))
         subt:add(f.timestamp_VITC_frames, buffer(offset + 4, 1))
+        subt:add(f.timestamp_VITC, buffer(offset + 1, 4), vitc)
+        subt:append_text(" "..vitc)
     elseif type == 3 then -- GPI
         local subt = tree:add(scte104_proto, buffer(offset, 3), "timestamp(): GPI")
         subt:add(f.timestamp_time_type, buffer(offset, 1))
         subt:add(f.timestamp_GPI_number, buffer(offset + 1, 1))
         subt:add(f.timestamp_GPI_edge, buffer(offset + 2, 1))
+        subt:append_text(string.format(" #%d edge:%d",
+            buffer(offset + 1, 1):uint(),
+            buffer(offset + 2, 1):uint()
+        ))
     end
     return offset + TIME_TYPE_LENGTHS[type]
 end
