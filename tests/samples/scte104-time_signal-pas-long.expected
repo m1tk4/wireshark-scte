@@ -1,0 +1,50 @@
+    1   0.000000 192.168.1.221 → 192.168.1.33 SCTE104 125 TIME_SIGNAL+SEGMENT_DESCR msgNo:113
+Frame 1: Packet, 125 bytes on wire (1000 bits), 125 bytes captured (1000 bits)
+Ethernet II, Src: Microsoft_01:c2:0b (00:15:5d:01:c2:0b), Dst: ASUSTekCOMPU_46:6c:35 (cc:28:aa:46:6c:35)
+Internet Protocol Version 4, Src: 192.168.1.221, Dst: 192.168.1.33
+Transmission Control Protocol, Src Port: 39204, Dst Port: 5167, Seq: 1, Ack: 1, Len: 59
+SCTE-104 Multiple Operation Message
+    opID: Multiple Operation Message (0xffff)
+    messageSize: 59
+    protocol_version: 0
+    AS_index: 1 (0x01)
+    message_number: 113
+    DPI_PID_index: 0xfa0 (4000)
+    SCTE35_protocol_version: 0
+    timestamp(): VITC 12:34:56:12
+        time_type: VITC (2)
+        VITC_hours: 12
+        VITC_minutes: 34
+        VITC_seconds: 56
+        VITC_frames: 12
+        VITC: 12:34:56:12
+    num_ops: 2
+    Operation 1: time_signal_request_data() 0x0104: 2500 ms
+        opID: time_signal_request_data() (0x0104)
+        data_length: 2
+        data(): 09c4
+        pre_roll_time: 2.500000000 seconds
+    Operation 2: insert_segmentation_descriptor_request_data() 0x010b: Provider Advertisement Start (0x30)
+        opID: insert_segmentation_descriptor_request_data() (0x010b)
+        data_length: 33
+        data(): 0012d687000087010c4d5955504944313233343536300305140101010103010102
+        segmentation_event_id: 1234567 (0x0012d687)
+        segmentation_event_cancel_indicator: False
+        duration: 2 minutes, 15 seconds
+        segmentation_upid_type: User Defined (0x01)
+        segmentation_upid_length: 12
+        segmentation_upid: 4d5955504944313233343536
+        segmentation_upid (ASCII): MYUPID123456
+        segmentation_type_id: Provider Advertisement Start (0x30)
+        segment_num: 3
+        segments_expected: 5
+        duration_extension_frames: 20
+        delivery_not_restricted_flag: True
+        web_delivery_allowed_flag: True
+        no_regional_blackout_flag: True
+        archive_allowed_flag: True
+        device_restrictions: None (11) (3)
+        insert_sub_segment_info: True
+        sub_segment_num: 1
+        sub_segments_expected: 2
+
