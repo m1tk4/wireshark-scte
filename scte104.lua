@@ -41,6 +41,26 @@ local OPID_SINGLE_OP = {
     [0xFFFF] = "Multiple Operation Message" --    `---'
 }
 
+-- opID Assigned Values for single_operation_message, short names (Table 8-1)
+local OPID_SINGLE_OP_SHORT = {
+    [0x0000] = "general_resp",
+    [0x0001] = "init_req",
+    [0x0002] = "init_resp",
+    [0x0003] = "alive_req",
+    [0x0004] = "alive_resp",
+    [0x0007] = "inject_resp",
+    [0x0008] = "inject_complete_resp",
+    [0x0009] = "config_req",
+    [0x000A] = "config_resp",
+    [0x000B] = "provisioning_req",
+    [0x000C] = "provisioning_resp",
+    [0x000F] = "fault_req",
+    [0x0010] = "fault_resp",
+    [0x0011] = "AS_alive_req",
+    [0x0012] = "AS_alive_resp",
+    [0xFFFF] = "Multiple Operation Message"
+}
+
 -- opID Assigned Values for multiple_operation_message (Table 8-4)
 local OPID_MULTI_OP = {
     [0x0100] = "inject_section_data_request()",
@@ -66,6 +86,33 @@ local OPID_MULTI_OP = {
     [0x0300] = "delete_ControlWord_data()",
     [0x0301] = "update_ControlWord_data()"
 }
+
+-- opID Assigned Values for multiple_operation_message - short names (Table 8-4)
+local OPID_MULTI_OP_SHORT = {
+    [0x0100] = "section",
+    [0x0101] = "splice",
+    [0x0102] = "splice_null",
+    [0x0103] = "start_schedule_download",
+    [0x0104] = "time_signal",
+    [0x0105] = "transmit_schedule",
+    [0x0106] = "component_mode_DPI",
+    [0x0107] = "encrypted_DPI",
+    [0x0108] = "descriptor",
+    [0x0109] = "DTMF",
+    [0x010A] = "avail",
+    [0x010B] = "segmentation",
+    [0x010C] = "proprietary_command",
+    [0x010D] = "schedule_component_mode",
+    [0x010E] = "schedule_definition",
+    [0x010F] = "tier",
+    [0x0110] = "time",
+    [0x0111] = "audio",
+    [0x0112] = "audio_provisioning",
+    [0x0113] = "alternate_break_duration",
+    [0x0300] = "delete_ControlWord",
+    [0x0301] = "update_ControlWord"
+}
+
 
 -- Result Codes (Table 14-1)
 local RESULT_CODES = {
@@ -333,6 +380,7 @@ function scte104_proto.dissector(buffer, pinfo, tree)
     end
 
     local message_number = 0
+    local summary_line = ""
     if (SOP) then
         t:add(f.result, buffer(4, 2))
         t:add(f.result_extension, buffer(6, 2))
@@ -366,6 +414,11 @@ function scte104_proto.dissector(buffer, pinfo, tree)
                 return
             end
         end
+        summary_line = string.format("%s msgNo:%d result:%d",
+            (OPID_SINGLE_OP_SHORT[opID] or "unknown"):upper(),
+            message_number,
+            buffer(4, 2):uint()
+        )
     else -- MOP
         t:add(f.protocol_version, buffer(4, 1))
         t:add(f.AS_index, buffer(5, 1))
@@ -378,17 +431,22 @@ function scte104_proto.dissector(buffer, pinfo, tree)
         pos = pos + 1
         local opNumber = 1
         while pos < messageSize and pos > 0 do
-            pos = Parse_operation(buffer, pos, t, opNumber)
+            local opShortName = ""
+            pos, opShortName = Parse_operation(buffer, pos, t, opNumber)
+            if opNumber >1 then
+                summary_line = summary_line .. "+"
+            end
+            summary_line = summary_line .. (opShortName or "unknown"):upper()
             opNumber = opNumber + 1
         end
+        summary_line = string.format("%s msgNo:%d",
+            summary_line,
+            message_number
+        )
     end
 
     -- Set the packet Info column
-    if (opID == 0xFFFF) then
-        pinfo.cols.info = string.format("MOP")
-    else
-        pinfo.cols.info = string.format("SOP msgNo:%d opID:0x%04X %s", message_number, opID, OPID_SINGLE_OP[opID] or "")
-    end
+    pinfo.cols.info = summary_line
 end
 
 ---parses out operation  structure defined in Table 8-2
@@ -397,11 +455,11 @@ end
 ---@param offset number
 ---@param tree TreeItem
 ---@param opNumber number
----@return number
+---@return number, string
 function Parse_operation(buffer, offset, tree, opNumber)
     if buffer:len() < offset + 4 then
         tree:add_proto_expert_info(e.msg_wrong_length, "not enough data for operation structure")
-        return -1
+        return -1,""
     end
     local m_opID = buffer(offset, 2):uint()
     local data_length = buffer(offset + 2, 2):uint()
@@ -420,7 +478,7 @@ function Parse_operation(buffer, offset, tree, opNumber)
     if m_opID == 0x0101 then ------------------------------------------------------------------------ splice_request_data()
         if data_length < 14 then
             t:add_proto_expert_info(e.msg_wrong_length, "not enough data for splice_request_data()")
-            return -1
+            return -1,""
         end
         t:add(f.splice_insert_type, buffer(data_offset, 1))
         t:append_text(string.format(": %s", SPLICE_INSERT_TYPES[buffer(data_offset, 1):uint()] or "unknown"))
@@ -445,7 +503,7 @@ function Parse_operation(buffer, offset, tree, opNumber)
     elseif m_opID == 0x0104 then --------------------------------------------------------------- time_signal_request_data()
         if data_length ~= 2 then
             t:add_proto_expert_info(e.msg_wrong_length, "wrong data_length for time_signal_request_data()")
-            return -1
+            return -1,""
         else
             local pre_roll = buffer(data_offset, 2):uint()
             t:append_text(string.format(": %d ms", pre_roll))
@@ -457,7 +515,7 @@ function Parse_operation(buffer, offset, tree, opNumber)
     elseif m_opID == 0x010b then ------------------------------------------------- insert_segmentation_descriptor_request_data()
         if data_length < 18 then
             t:add_proto_expert_info(e.msg_wrong_length, "not enough data for insert_segmentation_descriptor_request_data()")
-            return -1
+            return -1,""
         else 
             t:add(f.segmentation_event_id, buffer(data_offset, 4))
             t:add(f.segmentation_event_cancel_indicator, buffer(data_offset + 4, 1))
@@ -479,7 +537,7 @@ function Parse_operation(buffer, offset, tree, opNumber)
             if ((upid_length+18) > data_length) then
                 t:add_proto_expert_info(e.msg_wrong_length,
                     "segmentation_upid_length exceeds available data length")
-                return -1
+                return -1,""
             end
             t:add(f.segmentation_upid, buffer(data_offset+9, upid_length))
             -- if UPID only contains ASCII characters, add ASCII representation
@@ -517,7 +575,7 @@ function Parse_operation(buffer, offset, tree, opNumber)
             end
         end
     end
-    return offset + 4 + data_length
+    return offset + 4 + data_length, OPID_MULTI_OP_SHORT[m_opID] or "unknown"
 end
 
 ---parses out timestamp() structure defined in 12.4

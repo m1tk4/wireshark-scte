@@ -1,4 +1,4 @@
-    1   0.000000 10.101.18.96 → 10.101.17.103 SCTE104 67 SOP msgNo:168 opID:0x0003 alive_request_data()
+    1   0.000000 10.101.18.96 → 10.101.17.103 SCTE104 67 ALIVE_REQ msgNo:168 result:65535
 Frame 1: Packet, 67 bytes on wire (536 bits), 67 bytes captured (536 bits)
 Ethernet II, Src: Dell_eb:d7:90 (f0:d4:e2:eb:d7:90), Dst: Dell_74:67:ae (4c:d9:8f:74:67:ae)
 Internet Protocol Version 4, Src: 10.101.18.96, Dst: 10.101.17.103

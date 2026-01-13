@@ -1,4 +1,4 @@
-    1   0.000000 10.101.18.96 → 10.101.17.103 SCTE104 84 MOP
+    1   0.000000 10.101.18.96 → 10.101.17.103 SCTE104 84 SPLICE msgNo:10
 Frame 1: Packet, 84 bytes on wire (672 bits), 84 bytes captured (672 bits)
 Ethernet II, Src: Dell_eb:d7:90 (f0:d4:e2:eb:d7:90), Dst: Dell_74:67:ae (4c:d9:8f:74:67:ae)
 Internet Protocol Version 4, Src: 10.101.18.96, Dst: 10.101.17.103

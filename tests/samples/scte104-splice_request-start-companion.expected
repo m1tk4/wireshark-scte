@@ -1,4 +1,4 @@
-    1   0.000000    127.0.0.1 → 127.0.0.1    SCTE104 74 MOP
+    1   0.000000    127.0.0.1 → 127.0.0.1    SCTE104 74 SPLICE msgNo:2
 Frame 1: Packet, 74 bytes on wire (592 bits), 74 bytes captured (592 bits)
 Null/Loopback
 Internet Protocol Version 4, Src: 127.0.0.1, Dst: 127.0.0.1

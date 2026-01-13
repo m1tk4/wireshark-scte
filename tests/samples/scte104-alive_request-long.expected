@@ -1,4 +1,4 @@
-    1   0.000000    127.0.0.1 → 127.0.0.1    SCTE104 65 SOP msgNo:2 opID:0x0003 alive_request_data()
+    1   0.000000    127.0.0.1 → 127.0.0.1    SCTE104 65 ALIVE_REQ msgNo:2 result:65535
 Frame 1: Packet, 65 bytes on wire (520 bits), 65 bytes captured (520 bits)
 Null/Loopback
 Internet Protocol Version 4, Src: 127.0.0.1, Dst: 127.0.0.1

@@ -1,4 +1,4 @@
-    1   0.000000 10.101.17.103 → 10.101.18.96 SCTE104 75 SOP msgNo:1 opID:0x0004 alive_response_data()
+    1   0.000000 10.101.17.103 → 10.101.18.96 SCTE104 75 ALIVE_RESP msgNo:1 result:100
 Frame 1: Packet, 75 bytes on wire (600 bits), 75 bytes captured (600 bits)
 Ethernet II, Src: Dell_74:67:ae (4c:d9:8f:74:67:ae), Dst: Dell_eb:d7:90 (f0:d4:e2:eb:d7:90)
 Internet Protocol Version 4, Src: 10.101.17.103, Dst: 10.101.18.96

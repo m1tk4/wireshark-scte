@@ -1,4 +1,4 @@
-    1   0.000000    127.0.0.1 → 127.0.0.1    SCTE104 59 SOP msgNo:3 opID:0x0008 inject_complete_response_data()
+    1   0.000000    127.0.0.1 → 127.0.0.1    SCTE104 59 INJECT_COMPLETE_RESP msgNo:3 result:100
 Frame 1: Packet, 59 bytes on wire (472 bits), 59 bytes captured (472 bits)
 Null/Loopback
 Internet Protocol Version 4, Src: 127.0.0.1, Dst: 127.0.0.1
