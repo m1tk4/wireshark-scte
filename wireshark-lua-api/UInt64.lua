@@ -4,6 +4,20 @@
 
 ---@class UInt64
 ---UInt64 represents a 64 bit unsigned integer.
+---@overload fun(): UInt64
+---@operator unm(): UInt64
+---@operator add(UInt64): UInt64
+---@operator sub(UInt64): UInt64
+---@operator mul(UInt64): UInt64
+---@operator div(UInt64): UInt64
+---@operator mod(UInt64): UInt64
+---@operator pow(UInt64): UInt64
+---@operator bnot(): UInt64
+---@operator band(UInt64): UInt64
+---@operator bor(UInt64): UInt64
+---@operator bxor(UInt64): UInt64
+---@operator shl(number): UInt64
+---@operator shr(number): UInt64
 UInt64 = {}
 
 ---Decodes an 8-byte Lua binary string, using given endianness, into a new UInt64 object.
@@ -66,32 +80,39 @@ function UInt64:lower() end
 function UInt64:__unm() end
 
 ---Adds two UInt64 together and returns a new one. This may wrap the value.
+---@param j UInt64 The UInt64 to add.
 ---@return UInt64 uint64 The new UInt64.
-function UInt64:__add() end
+function UInt64:__add(j) end
 
 ---Subtracts two UInt64 and returns a new one. This may wrap the value.
+---@param j UInt64 The UInt64 to subtract.
 ---@return UInt64 uint64 The new UInt64.
-function UInt64:__sub() end
+function UInt64:__sub(j) end
 
 ---Multiplies two UInt64 and returns a new one. This may truncate the value.
+---@param j UInt64 The UInt64 to multiply.
 ---@return UInt64 uint64 The new UInt64.
-function UInt64:__mul() end
+function UInt64:__mul(j) end
 
 ---Divides two UInt64 and returns a new one. Integer divide, no remainder.
+---@param j UInt64 The UInt64 to divide by.
 ---@return UInt64 uint64 The UInt64 result.
-function UInt64:__div() end
+function UInt64:__div(j) end
 
 ---Divides two UInt64 and returns a new one of the remainder.
+---@param j UInt64 The UInt64 to divide by.
 ---@return UInt64 uint64 The UInt64 result.
-function UInt64:__mod() end
+function UInt64:__mod(j) end
 
 ---The first UInt64 is taken to the power of the second UInt64/number, returning a new one.
+---@param j UInt64 The UInt64 exponent.
 ---@return UInt64 uint64 The UInt64 object.
-function UInt64:__pow() end
+function UInt64:__pow(j) end
 
 ---Returns true if both UInt64 are equal.
+---@param j UInt64 The UInt64 to compare against.
 ---@return boolean
-function UInt64:__eq() end
+function UInt64:__eq(j) end
 
 ---Returns true if first UInt64 is less than the second.
 ---@return boolean
@@ -106,16 +127,19 @@ function UInt64:__le() end
 function UInt64:bnot() end
 
 ---Returns a UInt64 of the bitwise 'and' operation, with the given number/Int64/UInt64.
+---@param j UInt64 The UInt64 to and.
 ---@return UInt64 uint64 The UInt64 object.
-function UInt64:band() end
+function UInt64:band(j) end
 
 ---Returns a UInt64 of the bitwise 'or' operation, with the given number/Int64/UInt64.
+---@param j UInt64 The UInt64 to or.
 ---@return UInt64 uint64 The UInt64 object.
-function UInt64:bor() end
+function UInt64:bor(j) end
 
 ---Returns a UInt64 of the bitwise 'xor' operation, with the given number/Int64/UInt64.
+---@param j UInt64 The UInt64 to xor.
 ---@return UInt64 uint64 The UInt64 object.
-function UInt64:bxor() end
+function UInt64:bxor(j) end
 
 ---Returns a UInt64 of the bitwise logical left-shift operation, by the given number of bits.
 ---@param numbits number The number of bits to left-shift by.

@@ -11,6 +11,7 @@
 ---@field description string The description given to this dissector (read-only).
 ---@field fields table The Lua table of this dissector's ProtoFields. ProtoFields added to this table are registered to the Proto (and any removed are deregistered if previously registered).
 ---@field experts table The expert info Lua table of this Proto.
+---@overload fun(name:string, description:string): Proto
 Proto = {}
 
 --- Creates a new Proto object.
@@ -40,7 +41,6 @@ function Proto:__call(name, description) end
 ---@param listname string The heuristic list name this function is a heuristic for (e.g., "udp" or "infiniband.payload").
 ---@param func function|Dissector A Lua function that will be invoked for heuristic dissection, or a Dissector object.
 function Proto:register_heuristic(listname, func) end
-
 
 ---The protocol’s dissector, a function you define.
 ---

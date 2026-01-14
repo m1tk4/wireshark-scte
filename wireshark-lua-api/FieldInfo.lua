@@ -21,6 +21,7 @@
 ---@field little_endian boolean Whether this field is little-endian encoded (read-only).
 ---@field big_endian boolean Whether this field is big-endian encoded (read-only).
 ---@field name string The filter name of this field (read-only).
+---@overload fun(): any
 FieldInfo = {}
 
 ---Obtain the Length of the field.
@@ -40,8 +41,9 @@ function FieldInfo:__call() end
 function FieldInfo:__tostring() end
 
 ---Checks whether lhs is within rhs.
+---@param other any
 ---@return boolean result True if lhs is within rhs.
-function FieldInfo:__eq() end
+function FieldInfo:__eq(other) end
 
 ---Checks whether the end byte of lhs is before the end of rhs.
 ---@return boolean result True if the end byte of lhs is before the end of rhs.

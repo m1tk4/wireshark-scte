@@ -167,8 +167,13 @@ function TreeItem:add(proto, tvbrange, label) end
 
 ---Add a child item to this tree item, consisting of all parameter values separated by spaces
 ---@param label string|number String or number to add as a child item
+---@param label2? string|number Additional values to add, separated by spaces
+---@param label3? string|number Additional values to add, separated by spaces
+---@param label4? string|number Additional values to add, separated by spaces
+---@param label5? string|number Additional values to add, separated by spaces
+---@param label6? string|number Additional values to add, separated by spaces
 ---@return TreeItem # The new child TreeItem
-function TreeItem:add(label) end
+function TreeItem:add(label, label2, label3, label4, label5, label6) end
 
 --- Adds a child item to this tree item, returning the new child TreeItem.
 --- If the ProtoField represents a numeric value (int, uint or float), it's treated as Little Endian.

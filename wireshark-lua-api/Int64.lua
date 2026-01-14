@@ -4,6 +4,20 @@
 
 ---@class Int64
 ---Int64 represents a 64 bit signed integer.
+---@overload fun(): Int64
+---@operator unm(): Int64
+---@operator add(Int64): Int64
+---@operator sub(Int64): Int64
+---@operator mul(Int64): Int64
+---@operator div(Int64): Int64
+---@operator mod(Int64): Int64
+---@operator pow(Int64): Int64
+---@operator bnot(): Int64
+---@operator band(Int64): Int64
+---@operator bor(Int64): Int64
+---@operator bxor(Int64): Int64
+---@operator shl(number): Int64
+---@operator shr(number): Int64
 Int64 = {}
 
 ---Decodes an 8-byte Lua string, using the given endianness, into a new Int64 object.
@@ -66,34 +80,39 @@ function Int64:__tostring() end
 function Int64:__unm() end
 
 ---Adds two Int64 together and returns a new one. The value may wrapped.
+---@param j Int64 The Int64 to add.
 ---@return Int64 int64 The new Int64.
-function Int64:__add()
-    return Int64(0)
-end
+function Int64:__add(j) end
 
 ---Subtracts two Int64 and returns a new one. The value may wrapped.
+---@param j Int64 The Int64 to subtract.
 ---@return Int64 int64 The new Int64.
-function Int64:__sub() end
+function Int64:__sub(j) end
 
 ---Multiplies two Int64 and returns a new one. The value may truncated.
+---@param j Int64 The Int64 to multiply.
 ---@return Int64 int64 The new Int64.
-function Int64:__mul() end
+function Int64:__mul(j) end
 
 ---Divides two Int64 and returns a new one. Integer divide, no remainder.
+---@param j Int64 The Int64 to divide by.
 ---@return Int64 int64 The Int64 object.
-function Int64:__div() end
+function Int64:__div(j) end
 
 ---Divides two Int64 and returns a new one of the remainder.
 ---@return Int64 int64 The Int64 object.
-function Int64:__mod() end
+---@param j Int64 The Int64 to divide by.
+function Int64:__mod(j) end
 
 ---The first Int64 is taken to the power of the second Int64, returning a new one.
 ---@return Int64 int64 The Int64 object.
-function Int64:__pow() end
+---@param j Int64 The Int64 exponent.
+function Int64:__pow(j) end
 
 ---Returns true if both Int64 are equal.
 ---@return boolean
-function Int64:__eq() end
+---@param j Int64 The Int64 to compare against.
+function Int64:__eq(j) end
 
 ---Returns true if first Int64 is less than the second.
 ---@return boolean
@@ -108,16 +127,19 @@ function Int64:__le() end
 function Int64:bnot() end
 
 ---Returns a Int64 of the bitwise 'and' operation with the given number/Int64/UInt64.
+---@param j Int64
 ---@return Int64 int64 The Int64 object.
-function Int64:band() end
+function Int64:band(j) end
 
 ---Returns a Int64 of the bitwise 'or' operation, with the given number/Int64/UInt64.
+---@param j Int64 The Int64 to or.
 ---@return Int64 int64 The Int64 object.
-function Int64:bor() end
+function Int64:bor(j) end
 
 ---Returns a Int64 of the bitwise 'xor' operation, with the given number/Int64/UInt64.
 ---@return Int64 int64 The Int64 object.
-function Int64:bxor() end
+---@param j Int64 The Int64 to xor.
+function Int64:bxor(j) end
 
 ---Returns a Int64 of the bitwise logical left-shift operation, by the given number of bits.
 ---@param numbits number The number of bits to left-shift by.
@@ -153,6 +175,8 @@ local function Int64__Test()
     local a = Int64.new(12345678901234)
     local b = Int64.fromhex("00002C7D8C9A3B2A")
     local c = a + b
+    local d = Int64()
     print(c:tonumber())
     print(c:tohex())
+    print(d:rshift(30))
 end

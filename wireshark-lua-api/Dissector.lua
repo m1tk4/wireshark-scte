@@ -2,6 +2,7 @@
 
 --- A reference to a dissector, used to call a dissector against a packet or a part of it.
 ---@class Dissector
+---@overload fun(tvb: Tvb, pinfo: Pinfo, tree: TreeItem): number
 Dissector = {}
 
 --- Obtains a dissector reference by name.
@@ -28,15 +29,6 @@ function Dissector:call(tvb, pinfo, tree) end
 ---@param tree TreeItem The tree on which to add the protocol items.
 ---@return number bytes Number of bytes dissected.
 function Dissector:__call(tvb, pinfo, tree) end
-
---- Calls a dissector against a given packet (or part of it).
---- This is the metamethod that allows calling a Dissector object as a function.
----@param tvb Tvb The buffer to dissect.
----@param pinfo Pinfo The packet info.
----@param tree TreeItem The tree on which to add the protocol items.
----@return number bytes Number of bytes dissected.
-function Dissector(tvb, pinfo, tree) end
-
 
 --- Calls a dissector against a given packet (or part of it).
 ---@param tvb Tvb The buffer to dissect.

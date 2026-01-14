@@ -5,6 +5,7 @@
 ---@class Tvb
 ---A Tvb represents the packet's buffer. It is passed as an argument to listeners and dissectors.
 ---Tvbs are usable only by the current listener or dissector call and are destroyed as soon as the listener or dissector returns.
+---@overload fun(offset?:number, length?:number): TvbRange
 Tvb = {}
 
 ---Convert the bytes of a Tvb into a string. This is primarily useful for debugging purposes since the string will be truncated if it is too long.
@@ -60,14 +61,5 @@ function Tvb:raw(offset, length) end
 ---@return boolean
 function Tvb:__eq() end
 
----Equivalent to tvb:range(...)
----@param offset? number The offset (in octets) from the beginning of the Tvb. Defaults to 0.
----@param length? number The length (in octets) of the range. Defaults to -1, which specifies the remaining bytes in the Tvb.
----@return TvbRange range The TvbRange.
-function Tvb(offset, length) end
-
-
-local function Tvb__test__()
-    local tvb = Tvb(3,2):range(0,5)
-    local a = tvb:range(0, 10)
-end
+local tvb = Tvb(3,2):range(0,5)
+local a = tvb:range(0, 10)

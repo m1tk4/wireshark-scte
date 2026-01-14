@@ -61,6 +61,7 @@ ftypes = {
 ---@field name string|nil The filter name of this field, or nil (read-only).
 ---@field display string|nil The full display name of this field, or nil (read-only).
 ---@field type ftypes|nil The ftype of this field, or nil (read-only).
+---@overload fun(): FieldInfo[]
 Field = {}
 
 ---Create a Field extractor.
@@ -76,10 +77,6 @@ function Field.list() end
 ---Obtain all values (see FieldInfo) for this field.
 ---@return FieldInfo[] fieldinfos All the values of this field.
 function Field:__call() end
-
----Obtain all values (see FieldInfo) for this field.
----@return FieldInfo[] fieldinfos All the values of this field.
-function Field() end
 
 ---Obtain a string with the field filter name.
 ---@return string name The field filter name.

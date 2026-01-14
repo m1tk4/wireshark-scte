@@ -3,6 +3,7 @@
 -- https://www.wireshark.org/docs/wsdg_html_chunked/lua_module_Dir.html
 
 ---@class Dir
+---@overload fun(): string | nil
 ---A Directory object for handling directory operations.
 Dir = {}
 
@@ -56,10 +57,6 @@ function Dir.global_plugins_path() end
 ---@return string|nil filename The next filename or nil when done.
 function Dir:__call() end
 
----Gets the next file or subdirectory within the directory, or nil when done.
----@return string|nil filename The next filename or nil when done.
-function Dir() end
-
 ---Closes the directory. Called automatically during garbage collection of a Dir object.
 function Dir:close() end
 
@@ -70,10 +67,14 @@ local function Dir__test__()
     if d then
         for fname in d do
             print("Found file: " .. fname)
+            print(d():len())
+            d:__call()
+            d()
         end
         d:close()
     end
     d:personal_plugins_path()
+
 
     for filename in Dir.open('/path/to/dir') do
         print(filename)
