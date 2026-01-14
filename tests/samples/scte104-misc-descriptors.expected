@@ -1,0 +1,60 @@
+    1   0.000000 192.168.1.221 → 192.168.1.33 SCTE104 173 SPLICE+AVAIL+TIME_DESCR+DTMF_DESCR+PROPRIETARY_CMD msgNo:26
+Frame 1: Packet, 173 bytes on wire (1384 bits), 173 bytes captured (1384 bits)
+Ethernet II, Src: Microsoft_01:c2:0b (00:15:5d:01:c2:0b), Dst: ASUSTekCOMPU_46:6c:35 (cc:28:aa:46:6c:35)
+Internet Protocol Version 4, Src: 192.168.1.221, Dst: 192.168.1.33
+Transmission Control Protocol, Src Port: 47096, Dst Port: 5167, Seq: 1, Ack: 1, Len: 107
+SCTE-104 Multiple Operation Message
+    opID: Multiple Operation Message (0xffff)
+    messageSize: 107
+    protocol_version: 0
+    AS_index: 1 (0x01)
+    message_number: 26
+    DPI_PID_index: 0xfa0 (4000)
+    SCTE35_protocol_version: 0
+    timestamp(): No timestamp
+        time_type: None (0)
+    num_ops: 5
+    Operation 1: splice_request_data() 0x0101: spliceStart_normal
+        opID: splice_request_data() (0x0101)
+        data_length: 14
+        data(): 010000000100000000025d000000
+        splice_insert_type: spliceStart_normal (1)
+        splice_event_id: 1 (0x00000001)
+        unique_program_id: 0 (0x0000)
+        pre_roll_time: 0.000000000 seconds
+        break_duration: 1 minute, 500.000000 milliseconds
+        avail_num: 0
+        avails_expected: 0
+        auto_return_flag: False
+        not_an_entry_flag: True
+    Operation 2: insert_avail_descriptor_request_data() 0x010a: 1001 1002 1003 
+        opID: insert_avail_descriptor_request_data() (0x010a)
+        data_length: 13
+        data(): 03000003e9000003ea000003eb
+        num_provider_avails: 3
+        provider_avail_id: 1001 (0x000003e9)
+        provider_avail_id: 1002 (0x000003ea)
+        provider_avail_id: 1003 (0x000003eb)
+    Operation 3: insert_time_descriptor() 0x0110: 2026-01-13 17:14:19.000500 UTC
+        opID: insert_time_descriptor() (0x0110)
+        data_length: 12
+        data(): 000069667d901dcd65000025
+        TAI_seconds: 1768324496
+        TAI_ns: 500000000
+        UTC_offset: 37
+        TAI: Jan 13, 2026 17:14:19.500000000 UTC
+    Operation 4: insert_DTMF_descriptor_request_data() 0x0109: 1234#
+        opID: insert_DTMF_descriptor_request_data() (0x0109)
+        data_length: 7
+        data(): 0f053132333423
+        pre_roll_time: 1.500000000 seconds
+        dtmf_length: 5
+        dtmf: 1234#
+    Operation 5: proprietary_command_request_data() 0x010c: 0x0012D687 cmd=0x7B
+        opID: proprietary_command_request_data() (0x010c)
+        data_length: 29
+        data(): 0012d6877b596f21596f21596f21536f6d652044617461204865726521
+        proprietary_id: 0x0012d687 (1234567)
+        proprietary_command: 0x7b (123)
+        proprietary_data: 596f21596f21596f21536f6d652044617461204865726521
+

@@ -324,17 +324,28 @@ local f = {
     segmentation_upid_ascii    = ProtoField.string("scte104.segmentation_upid_ascii", "segmentation_upid (ASCII)", base.ASCII),
     segmentation_type_id       = ProtoField.uint8("scte104.segmentation_type_id", "segmentation_type_id", base.HEX_DEC, SEGMENTATION_TYPES),
     segment_num                = ProtoField.uint8("scte104.segment_num", "segment_num", base.DEC),
-    segments_expected         = ProtoField.uint8("scte104.segments_expected", "segments_expected", base.DEC),
+    segments_expected          = ProtoField.uint8("scte104.segments_expected", "segments_expected", base.DEC),
     duration_extension_frames  = ProtoField.uint8("scte104.duration_extension_frames", "duration_extension_frames", base.DEC),
     delivery_not_restricted_flag  = ProtoField.bool("scte104.delivery_not_restricted_flag", "delivery_not_restricted_flag"),
-    web_delivery_allowed_flag     = ProtoField.bool("scte104.web_delivery_allowed_flag", "web_delivery_allowed_flag"),
-    no_regional_blackout_flag     = ProtoField.bool("scte104.no_regional_blackout_flag", "no_regional_blackout_flag"),
-    archive_allowed_flag          = ProtoField.bool("scte104.archive_allowed_flag", "archive_allowed_flag"),
-    device_restrictions           = ProtoField.uint8("scte104.device_restrictions", "device_restrictions", base.DEC, DEVICE_RESTRICTIONS),
-    insert_sub_segment_info       = ProtoField.bool("scte104.insert_sub_segment_info", "insert_sub_segment_info"),
+    web_delivery_allowed_flag  = ProtoField.bool("scte104.web_delivery_allowed_flag", "web_delivery_allowed_flag"),
+    no_regional_blackout_flag  = ProtoField.bool("scte104.no_regional_blackout_flag", "no_regional_blackout_flag"),
+    archive_allowed_flag       = ProtoField.bool("scte104.archive_allowed_flag", "archive_allowed_flag"),
+    device_restrictions        = ProtoField.uint8("scte104.device_restrictions", "device_restrictions", base.DEC, DEVICE_RESTRICTIONS),
+    insert_sub_segment_info    = ProtoField.bool("scte104.insert_sub_segment_info", "insert_sub_segment_info"),
     sub_segment_num            = ProtoField.uint8("scte104.sub_segment_num", "sub_segment_num", base.DEC),
     sub_segments_expected      = ProtoField.uint8("scte104.sub_segments_expected", "sub_segments_expected", base.DEC),
-    tier_data                  = ProtoField.uint16("scte104.tier_data", "tier_data", base.HEX_DEC, nil, 0x0FFF)
+    tier_data                  = ProtoField.uint16("scte104.tier_data", "tier_data", base.HEX_DEC, nil, 0x0FFF),
+    TAI_seconds                = ProtoField.uint64("scte104.TAI_seconds", "TAI_seconds", base.DEC),
+    TAI_ns                     = ProtoField.uint32("scte104.TAI_ns", "TAI_ns", base.DEC),
+    TAI                        = ProtoField.absolute_time("scte104.TAI", "TAI", base.UTC),
+    UTC_offset                 = ProtoField.int16("scte104.UTC_offset", "UTC_offset", base.DEC),
+    dtmf_length                = ProtoField.uint8("scte104.dtmf_length", "dtmf_length", base.DEC),
+    dtmf_char                  = ProtoField.string("scte104.dtmf", "dtmf", base.ASCII),
+    num_provider_avails        = ProtoField.uint8("scte104.num_provider_avails", "num_provider_avails", base.DEC),
+    provider_avail_id          = ProtoField.uint32("scte104.provider_avail_id", "provider_avail_id", base.DEC_HEX),
+    proprietary_id             = ProtoField.uint32("scte104.proprietary_id", "proprietary_id", base.HEX_DEC),
+    proprietary_command        = ProtoField.uint8("scte104.proprietary_command", "proprietary_command", base.HEX_DEC),
+    proprietary_data           = ProtoField.bytes("scte104.proprietary_data", "proprietary_data"),
 }
 scte104_proto.fields = f
 
@@ -584,6 +595,63 @@ function Parse_operation(buffer, offset, tree, opNumber)
         else 
             t:add(f.tier_data, buffer(data_offset, 2))
             t:append_text(string.format(": 0x%04X (%d)", buffer(data_offset, 2):uint(),buffer(data_offset, 2):uint()))
+        end
+    elseif m_opID == 0x0110 then ------------------------------------------------- insert_time_descriptor()
+        if data_length < 12 then
+            t:add_proto_expert_info(e.msg_wrong_length, "not enough data for insert_time_descriptor()")
+            return -1,""
+        else
+            t:add(f.TAI_seconds, buffer(data_offset, 6))
+            t:add(f.TAI_ns, buffer(data_offset + 6, 4))
+            t:add(f.UTC_offset, buffer(data_offset + 10, 2))
+            local tai = NSTime.new(
+                buffer:range(data_offset, 6):uint64():tonumber() - 37, -- TAI to UTC conversion (not accounting for leap seconds)
+                buffer(data_offset + 6, 4):uint()
+            )
+            t:add(f.TAI, buffer(data_offset, 10), tai)
+            t:append_text(": "..os.date("!%Y-%m-%d %H:%M:%S", tai.secs) .. string.format(".%06d", tai.nsecs/1000000) .. " UTC")
+            
+        end
+    elseif m_opID == 0x0109 then ------------------------------------------------- insert_DTMF_descriptor_request_data()
+        if (data_length < 3) or (data_length < (2 + buffer(data_offset+1,1):uint())) then
+            t:add_proto_expert_info(e.msg_wrong_length, "not enough data for insert_DTMF_descriptor_request_data()")
+            return -1,""
+        else
+            t:add(f.pre_roll_time, buffer(data_offset, 1), NSTime.new(
+                math.floor(buffer(data_offset, 1):uint() / 10), -- seconds
+                (buffer(data_offset, 1):uint() % 10) * 100000000) -- nanoseconds
+            )
+            t:add(f.dtmf_length, buffer(data_offset + 1, 1))
+            t:add(f.dtmf_char, buffer(data_offset + 2, buffer(data_offset + 1, 1):uint()))
+            t:append_text(": "..buffer(data_offset + 2, buffer(data_offset + 1, 1):uint()):string())            
+        end
+    elseif m_opID == 0x010a then ------------------------------------------------- insert_avail_descriptor_request_data()
+        if (data_length < 1) or (data_length < (1 + buffer(data_offset+1,1):uint()*4)) then
+            t:add_proto_expert_info(e.msg_wrong_length, "not enough data for insert_avail_descriptor_request_data()")
+            return -1,""
+        else
+            local num_avails = buffer(data_offset, 1):uint()
+            t:add(f.num_provider_avails, buffer(data_offset, 1))
+            t:append_text(": ")
+            for i = 0, num_avails - 1 do
+                t:add(f.provider_avail_id, buffer(data_offset + 1 + i*4, 4))
+                t:append_text(string.format("%d ", buffer(data_offset + 1 + i*4, 4):uint()))
+            end
+        end
+    elseif m_opID == 0x010c then ------------------------------------------------- proprietary_command_request_data()
+        if (data_length < 5) then
+            t:add_proto_expert_info(e.msg_wrong_length, "not enough data for proprietary_command_request_data()")
+            return -1,""
+        else
+            t:add(f.proprietary_id, buffer(data_offset, 4))
+            t:add(f.proprietary_command, buffer(data_offset + 4, 1))
+            if data_length > 5 then
+                t:add(f.proprietary_data, buffer(data_offset + 5, data_length - 5))
+            end
+            t:append_text(string.format(": 0x%08X cmd=0x%02X",
+                buffer(data_offset, 4):uint(),
+                buffer(data_offset + 4, 1):uint()
+            ))
         end
     end
     return offset + 4 + data_length, OPID_MULTI_OP_SHORT[m_opID] or "unknown"
