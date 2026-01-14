@@ -1,44 +1,108 @@
-# wireshark-scte
-Collection of WireShark dissectors for several SCTE protocols like SCTE-104, SCTE-35 etc.
+# Wireshark SCTE Dissectors
 
-### Installs
+Wireshark/TShark Lua dissectors for SCTE (Society of Cable Telecommunications Engineers) protocols.
 
-via releases
+## Supported Protocols
 
+- **SCTE-104** (2023) - Automation System to Compression System Communications over TCP
+- Additional SCTE protocols coming soon
+
+## Features
+
+- Full SCTE-104 message dissection including:
+  - Init and alive messages
+  - Splice requests with SCTE-35 descriptors
+  - Time signal requests
+  - Segmentation descriptors with all UPID types
+  - Detailed bit-level field breakdown
+- Human-readable timestamps (UTC with microseconds)
+- Comprehensive value-to-name mappings for all operation codes and types
+- Compatible with Wireshark 3.x and 4.x
+
+## Installation
+
+### Windows
+
+**One-line install (PowerShell):**
 ```powershell
-# Download specific version
-Invoke-WebRequest -Uri "https://github.com/m1tk4/wireshark-scte/releases/download/v1.0.0/scte104.lua" -OutFile "scte104.lua"
-
-# Download latest version (always gets newest)
-Invoke-WebRequest -Uri "https://github.com/m1tk4/wireshark-scte/releases/latest/download/scte104.lua" -OutFile "scte104.lua"
-
-# Short and makes sure directory is there
-mkdir C:\some\path -Force
-iwr https://example.com/file.lua -OutFile C:\some\path\file.lua
-
+mkdir "$env:APPDATA\Wireshark\plugins" -Force; iwr https://github.com/m1tk4/wireshark-scte/releases/latest/download/scte104.lua -OutFile "$env:APPDATA\Wireshark\plugins\scte104.lua"
 ```
 
-directly from git
+**Manual install:**
+1. Download [scte104.lua](https://github.com/m1tk4/wireshark-scte/releases/latest/download/scte104.lua)
+2. Copy to `%APPDATA%\Wireshark\plugins\` (typically `C:\Users\YourName\AppData\Roaming\Wireshark\plugins\`)
+3. Restart Wireshark
 
-```powershell
-# Direct download
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/username/repo/main/scte104.lua" -OutFile "scte104.lua"
+### macOS
 
-# Or using curl alias
-curl -o scte104.lua https://raw.githubusercontent.com/username/repo/main/scte104.lua
+**One-line install (Terminal):**
+```bash
+mkdir -p ~/.local/lib/wireshark/plugins && curl -L https://github.com/m1tk4/wireshark-scte/releases/latest/download/scte104.lua -o ~/.local/lib/wireshark/plugins/scte104.lua
 ```
 
-checking for dir presence first
-```powershell
-# install.ps1
-$pluginDir = "$env:APPDATA\Wireshark\plugins"
-if (!(Test-Path $pluginDir)) { New-Item -ItemType Directory -Path $pluginDir -Force }
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/m1tk4/wireshark-scte/main/scte104.lua" -OutFile "$pluginDir\scte104.lua"
-Write-Host "✓ SCTE-104 dissector installed to $pluginDir"
+**Manual install:**
+1. Download [scte104.lua](https://github.com/m1tk4/wireshark-scte/releases/latest/download/scte104.lua)
+2. Copy to `~/.local/lib/wireshark/plugins/`
+3. Restart Wireshark
+
+### Linux
+
+**One-line install (bash/zsh):**
+```bash
+mkdir -p ~/.local/lib/wireshark/plugins && curl -L https://github.com/m1tk4/wireshark-scte/releases/latest/download/scte104.lua -o ~/.local/lib/wireshark/plugins/scte104.lua
 ```
 
-### Notes
-Some day this will be an actual manual file.
+**Manual install:**
+1. Download [scte104.lua](https://github.com/m1tk4/wireshark-scte/releases/latest/download/scte104.lua)
+2. Copy to `~/.local/lib/wireshark/plugins/` or `/usr/lib/wireshark/plugins/`
+3. Restart Wireshark
 
-dissector dev:
-On a Mac, ensure Wireshark and TShark are available in the path. Otherwise works fine.
+## Usage
+
+Once installed, the dissector automatically decodes SCTE-104 traffic on TCP port 5167. To capture or analyze:
+
+1. Start Wireshark and capture traffic on the network interface
+2. Apply display filter: `scte104`
+3. SCTE-104 messages will be automatically dissected and displayed
+
+**TShark usage:**
+```bash
+tshark -r capture.pcap -Y scte104 -O scte104
+```
+
+## Verification
+
+To verify the plugin is loaded:
+1. Open Wireshark
+2. Go to **Help → About Wireshark → Plugins**
+3. Search for "scte104" - you should see it listed
+
+Or check from command line:
+```bash
+tshark -G plugins | grep scte104
+```
+
+## Development
+
+This project includes a complete test infrastructure using Node.js and Mocha:
+
+```bash
+npm install
+npm test                          # Run all tests
+npm run watch-sample <file>       # Watch mode for development
+npm run update-expected <file>    # Update expected test outputs
+npm run wireshark                 # Launch Wireshark with all plugins
+```
+
+## Standards
+
+- [ANSI/SCTE 104 2023](https://www.scte.org/standards/library/catalog/ansi-scte-104-automation-to-compression-communications-api/) - Automation System to Compression System Communications API
+- [ANSI/SCTE 35 2023r1](https://www.scte.org/standards/library/catalog/ansi-scte-35-digital-program-insertion-cueing-message/) - Digital Program Insertion Cueing Message
+
+## License
+
+MIT License - see [LICENSE](LICENSE) file for details
+
+## Contributing
+
+Contributions welcome! Please feel free to submit issues or pull requests.
