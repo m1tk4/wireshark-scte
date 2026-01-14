@@ -9,6 +9,8 @@ Wireshark/TShark Lua dissectors for SCTE (Society of Cable Telecommunications En
 
 ## Features
 
+![SCTE-104 Dissector in Wireshark](.github/screenshot.png)
+
 - Full SCTE-104 message dissection including:
   - Init and alive messages
   - Splice requests with SCTE-35 descriptors
