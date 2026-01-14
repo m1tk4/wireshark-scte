@@ -25,7 +25,7 @@ Wireshark/TShark Lua dissectors for SCTE (Society of Cable Telecommunications En
 
 **One-line install (PowerShell):**
 ```powershell
-mkdir "$env:APPDATA\Wireshark\plugins" -Force; iwr https://github.com/m1tk4/wireshark-scte/releases/latest/download/scte104.lua -OutFile "$env:APPDATA\Wireshark\plugins\scte104.lua"
+mkdir "$env:APPDATA\Wireshark\plugins" -Force | Out-Null; iwr https://github.com/m1tk4/wireshark-scte/releases/latest/download/scte104.lua -OutFile "$env:APPDATA\Wireshark\plugins\scte104.lua"
 ```
 
 **Manual install:**
