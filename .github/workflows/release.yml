@@ -15,10 +15,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Extract version from tag
+        id: get_version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+      - name: Update release version in all .lua files
+        run: |
+          for file in *.lua; do
+            sed -i 's/^local release = ".*"/local release = "${{ steps.get_version.outputs.VERSION }}"/' "$file"
+          done
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: scte104.lua
+          files: '*.lua'
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

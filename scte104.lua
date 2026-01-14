@@ -10,8 +10,9 @@
 
 ]]                                                         --
 
+local release = "1.0.0"
 set_plugin_info({                                          --    /\_/\
-    version = "1.0.0",                                     --   ( o.o )
+    version = release,                                     --   ( o.o )
     description = "SCTE-104 Protocol Dissector",           --    > ^ <
     author = "Dimitri Tarassenko",                         --   /|   |\
     repository = "https://github.com/m1tk4/wireshark-scte" --  (_|   |_)~~
