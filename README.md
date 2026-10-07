@@ -19,6 +19,8 @@ Wireshark/TShark Lua dissectors for SCTE (Society of Cable Telecommunications En
   - Detailed bit-level field breakdown
 - Human-readable timestamps (UTC with microseconds)
 - Comprehensive value-to-name mappings for all operation codes and types
+- Automatic dissection of SCTE-104 messages carried in SMPTE ST 2010 VANC
+  packets when Wireshark provides the ST 2010 payload interface
 - Compatible with Wireshark 3.x and 4.x
 
 ## Installation
@@ -61,7 +63,11 @@ mkdir -p ~/.local/lib/wireshark/plugins && curl -L https://github.com/m1tk4/wire
 
 ## Usage
 
-Once installed, the dissector automatically decodes SCTE-104 traffic on TCP port 5167. To capture or analyze:
+Once installed, the dissector automatically decodes SCTE-104 traffic on TCP
+port 5167. It also registers with Wireshark's SMPTE ST 2010 dissector when that
+interface is available. On older Wireshark versions that do not provide the
+interface, the registration is skipped and TCP dissection continues to work as
+before. To capture or analyze:
 
 1. Start Wireshark and capture traffic on the network interface
 2. Apply display filter: `scte104`

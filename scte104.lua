@@ -754,3 +754,15 @@ local tcp_port = DissectorTable.get("tcp.port")
 if tcp_port then
     tcp_port:add(5167, scte104_proto)
 end
+
+-- Wireshark's ST 2010 dissector exposes complete SCTE-104 messages through
+-- payload type 0. Register here when that table is available so SCTE-104 in
+-- VANC is decoded automatically. Older Wireshark releases do not provide the
+-- table and either return nil or raise an error when it is requested, so use
+-- pcall to make the optional registration a no-op on those releases.
+local st2010_available, st2010_payload_type = pcall(
+    DissectorTable.get, "st2010.payload_type"
+)
+if st2010_available and st2010_payload_type then
+    st2010_payload_type:add(0, scte104_proto)
+end
